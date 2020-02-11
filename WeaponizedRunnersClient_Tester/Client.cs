@@ -4,15 +4,15 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 using WeaponizedRunnersShared;
-using WeaponizedRunnersServer.Server.Protocoles;
 using WeaponizedRunnersClient_Tester;
+using WeaponizedRunnersShared.TransferProtocoles;
 
 namespace WeaponizedRunnersClient_Tester
 {
-    public class Client
+    public class Client : IClient
     {
-        public string ServerIP = "127.0.0.1";
-        public int ServerPort = 26950;
+        public string ServerIP { get; set; } = "127.0.0.1";
+        public int ServerPort { get; set; } = 26950;
         public int myId = 0;
         public TCP tcp;
         public UDP udp;
@@ -28,8 +28,20 @@ namespace WeaponizedRunnersClient_Tester
             ServerPort = port;
             ClientReceiveManager = new ClientReceiveManager();
             Send = new ClientSend();
-            tcp = new TCP(myId, this);
-            udp = new UDP(myId, this);
+
+            Action<byte[]> receivePacketAction = (packetBytes) =>
+            {
+                ClientReceiveManager.ExecuteOnMainThread(() =>
+                {
+                    using (Packet packet = new Packet(packetBytes))
+                    {
+                        int packetId = packet.ReadInt();
+                        ClientReceiveManager.ProcessPacket(packetId, this, packet);
+                    }
+                });
+            };
+            tcp = new TCP(myId, this, receivePacketAction);
+            udp = new UDP(myId, this, receivePacketAction);
         }
 
         public void ConnectToServer()
@@ -43,8 +55,8 @@ namespace WeaponizedRunnersClient_Tester
             if (isConnected)
             {
                 isConnected = false;
-                tcp.socket.Close();
-                udp.socket.Close();
+                tcp.Disconnect();
+                udp.Disconnect();
 
                 Console.WriteLine("Disconnected from server.");
             }

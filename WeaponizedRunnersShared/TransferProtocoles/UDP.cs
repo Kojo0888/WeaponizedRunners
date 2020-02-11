@@ -4,19 +4,18 @@ using System.Net;
 using System.Text;
 using System.Numerics;
 using System.Net.Sockets;
-using WeaponizedRunnersClient_Tester;
 using WeaponizedRunnersShared;
 
-namespace WeaponizedRunnersServer.Server.Protocoles
+namespace WeaponizedRunnersShared.TransferProtocoles
 {
     public class UDP
     {
         public UdpClient socket;
         public IPEndPoint endPoint;
-        private Client _parentClient;
+        private IClient _parentClient;
         private Action<byte[]> _receivePackageAction;
 
-        public UDP(int id, Client client, Action<byte[]> action)
+        public UDP(int id, IClient client, Action<byte[]> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
@@ -36,6 +35,14 @@ namespace WeaponizedRunnersServer.Server.Protocoles
             {
                 SendData(_packet);
             }
+        }
+
+        public void Connect(IPEndPoint _endPoint)
+        {
+            endPoint = _endPoint;
+            socket = new UdpClient(endPoint);
+            socket.Connect(endPoint);
+            socket.BeginReceive(ReceiveCallback, null);
         }
 
         /// <summary>Sends data to the client via UDP.</summary>
@@ -83,20 +90,28 @@ namespace WeaponizedRunnersServer.Server.Protocoles
         /// <param name="bytes">The recieved data.</param>
         private void HandleData(byte[] bytes)
         {
-            using (Packet _packet = new Packet(bytes))
-            {
-                int _packetLength = _packet.ReadInt();
-                bytes = _packet.ReadBytes(_packetLength);
-            }
+            //using (Packet _packet = new Packet(bytes))
+            //{
+            //    int _packetLength = _packet.ReadInt();
+            //    bytes = _packet.ReadBytes(_packetLength);
+            //}
             _receivePackageAction(bytes);
         }
 
-        /// <summary>Disconnects from the server and cleans up the UDP connection.</summary>
-        private void Disconnect()
+        public void HandleData(Packet _packetData)
         {
-            _parentClient.Disconnect();
+            byte[] packetBytes = _packetData.ReadAllBytes();
+
+            _receivePackageAction(packetBytes);
+        }
+
+        /// <summary>Disconnects from the server and cleans up the UDP connection.</summary>
+        public void Disconnect()
+        {
+            //_parentClient.Disconnect();
 
             endPoint = null;
+            socket.Close();
             socket = null;
         }
     }

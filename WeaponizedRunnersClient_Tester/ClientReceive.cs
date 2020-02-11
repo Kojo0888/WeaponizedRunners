@@ -18,7 +18,7 @@ public class ClientReceive
         client.Send.Welcome(client);
 
         // Now that we have the client's id, connect UDP
-        client.udp.Connect(((IPEndPoint)client.tcp.socket.Client.LocalEndPoint).Port);
+        client.udp.Connect(((IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint).Port);
     }
 
     public static void Message(Client client, Packet packet)
