@@ -77,7 +77,7 @@ namespace WeaponizedRunnersServer.Server.Protocoles
                 byte[] data = new byte[byteLength];
                 Array.Copy(receiveBuffer, data, byteLength);
                 var shouldReset = HandleData(data);
-                receivedData.Reset(shouldReset);
+                receivedData.Reset(true);
                 stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
             }
             catch
