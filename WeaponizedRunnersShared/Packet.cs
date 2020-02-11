@@ -26,15 +26,20 @@ namespace WeaponizedRunnersShared
             PacketTypeId = packetTypeId;
         }
 
-        public Packet(byte[] _data) : this()
+        public Packet(byte[] incomingBytes) : this()
         {
-            buffer.AddRange(_data);
+            PacketTypeId = BitConverter. returnBuffer.AddRange(BitConverter.GetBytes());
+            ClientId = returnBuffer.AddRange(BitConverter.GetBytes());
+            buffer.AddRange(incomingBytes);
         }
 
         public byte[] GetPacketBytes()
         {
             var returnBuffer = new List<byte>();
-            returnBuffer.AddRange(BitConverter.To);
+            returnBuffer.AddRange(BitConverter.GetBytes(PacketTypeId));
+            returnBuffer.AddRange(BitConverter.GetBytes(ClientId));
+            returnBuffer.AddRange(buffer);
+            return returnBuffer.ToArray();
         }
 
         public void Dispose()
