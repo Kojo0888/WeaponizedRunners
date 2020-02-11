@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ClientProtocoles\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\WeaponizedRunnersShared\WeaponizedRunnersShared.csproj" />
   </ItemGroup>
 

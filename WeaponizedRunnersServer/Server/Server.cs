@@ -81,7 +81,7 @@ namespace GameServer
 
                 using (Packet _packet = new Packet(bytes))
                 {
-                    int _clientId = _packet.ReadInt();
+                    int _clientId = _packet.ClientId;
 
                     if (_clientId == 0)
                     {

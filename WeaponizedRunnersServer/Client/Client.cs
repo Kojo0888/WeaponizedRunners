@@ -22,15 +22,11 @@ namespace GameServer
         {
             id = _clientId;
 
-            Action<byte[]> receivePacketAction = (packetBytes) =>
+            Action<Packet> receivePacketAction = (packet) =>
             {
                 Server.ReceiveManager.ExecuteOnMainThread(() =>
                 {
-                    using (Packet packet = new Packet(packetBytes))
-                    {
-                        int packetId = packet.ReadInt();
-                        Server.ReceiveManager.ProcessPacket(packetId, id, packet);
-                    }
+                    Server.ReceiveManager.ProcessPacket(packet.PacketTypeId, id, packet);
                 });
             };
             tcp = new TCP(id, this, receivePacketAction);
