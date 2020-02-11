@@ -13,9 +13,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         public UdpClient socket;
         public IPEndPoint endPoint;
         private IClient _parentClient;
-        private Action<byte[]> _receivePackageAction;
+        private Action<Packet> _receivePackageAction;
 
-        public UDP(int id, IClient client, Action<byte[]> action)
+        public UDP(int id, IClient client, Action<Packet> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
@@ -54,7 +54,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 //_packet.InsertInt((int)ClientPacketType.message); // Insert the client's ID at the start of the packet
                 if (socket != null)
                 {
-                    socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
+                    var bytes = _packet.GetPacketBytes();
+                    socket.BeginSend(bytes, bytes.Length, null, null);
                 }
             }
             catch (Exception ex)
@@ -69,41 +70,26 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         {
             try
             {
-                byte[] _data = socket.EndReceive(_result, ref endPoint);
+                byte[] data = socket.EndReceive(_result, ref endPoint);
                 socket.BeginReceive(ReceiveCallback, null);
 
-                if (_data.Length < 4)
+                Packet packet = new Packet(data);
+                if (!packet.IsValid())
                 {
                     _parentClient.Disconnect();
                     return;
                 }
 
-                HandleData(_data);
+                _receivePackageAction(packet);
             }
-            catch
+            catch(Exception ex)
             {
-                Disconnect();
+                Console.WriteLine(ex.ToString());
+                _parentClient.Disconnect();
             }
         }
 
-        /// <summary>Prepares received data to be used by the appropriate packet handler methods.</summary>
-        /// <param name="bytes">The recieved data.</param>
-        private void HandleData(byte[] bytes)
-        {
-            //using (Packet _packet = new Packet(bytes))
-            //{
-            //    int _packetLength = _packet.ReadInt();
-            //    bytes = _packet.ReadBytes(_packetLength);
-            //}
-            _receivePackageAction(bytes);
-        }
 
-        public void HandleData(Packet _packetData)
-        {
-            byte[] packetBytes = _packetData.ReadAllBytes();
-
-            _receivePackageAction(packetBytes);
-        }
 
         /// <summary>Disconnects from the server and cleans up the UDP connection.</summary>
         public void Disconnect()

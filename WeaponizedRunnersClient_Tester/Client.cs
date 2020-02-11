@@ -29,15 +29,11 @@ namespace WeaponizedRunnersClient_Tester
             ClientReceiveManager = new ClientReceiveManager();
             Send = new ClientSend();
 
-            Action<byte[]> receivePacketAction = (packetBytes) =>
+            Action<Packet> receivePacketAction = (packet) =>
             {
                 ClientReceiveManager.ExecuteOnMainThread(() =>
                 {
-                    using (Packet packet = new Packet(packetBytes))
-                    {
-                        int packetId = packet.ReadInt();
-                        ClientReceiveManager.ProcessPacket(packetId, this, packet);
-                    }
+                     ClientReceiveManager.ProcessPacket(packet.PacketTypeId, this, packet);
                 });
             };
             tcp = new TCP(myId, this, receivePacketAction);

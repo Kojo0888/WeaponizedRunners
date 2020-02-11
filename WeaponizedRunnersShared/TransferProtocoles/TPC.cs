@@ -10,13 +10,13 @@ namespace WeaponizedRunnersShared.TransferProtocoles
     {
         public TcpClient tcpClient;
 
-        private Action<byte[]> _receivePackageAction;
+        private Action<Packet> _receivePackageAction;
 
         private NetworkStream stream;
         private Packet receivedData;
         private byte[] receiveBuffer;
         private IClient _parentClient;
-        public TCP(int id, IClient client, Action<byte[]> action)
+        public TCP(int id, IClient client, Action<Packet> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
@@ -68,7 +68,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             {
                 if (tcpClient != null)
                 {
-                    stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                    var bytes = packet.GetPacketBytes();
+                    stream.BeginWrite(bytes, 0, bytes.Length, null, null);
                 }
             }
             catch (Exception ex)
@@ -90,8 +91,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
                 byte[] data = new byte[byteLength];
                 Array.Copy(receiveBuffer, data, byteLength);
-                var shouldReset = HandleData(data);
-                receivedData.Reset(shouldReset);
+                Packet packet = new Packet(data);
+                _receivePackageAction(packet);
+
                 stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
             }
             catch(Exception ex)
@@ -99,12 +101,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 Console.WriteLine(ex.ToString());
                 Disconnect();
             }
-        }
-
-        private bool HandleData(byte[] data)
-        {
-            _receivePackageAction(data);
-            return true;
         }
 
         public void Disconnect()

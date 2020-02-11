@@ -13,6 +13,7 @@ namespace WeaponizedRunnersShared
 
         public int ClientId;
         public int PacketTypeId;
+        private bool isValid = false;
 
         public Packet()
         {
@@ -38,9 +39,15 @@ namespace WeaponizedRunnersShared
         public void SetPacketBytes(byte[] incomingBytes)
         {
             buffer = new List<byte>();
+            if (incomingBytes.Length < 4)
+            {
+                isValid = false;
+                return;
+            }
             PacketTypeId = BitConverter.ToInt32(incomingBytes, 0);
             ClientId = BitConverter.ToInt32(incomingBytes, 4);
             buffer.AddRange(incomingBytes.Skip(8));
+            isValid = true;
         }
 
         public byte[] GetPacketBytes()
@@ -50,6 +57,11 @@ namespace WeaponizedRunnersShared
             returnBuffer.AddRange(BitConverter.GetBytes(ClientId));
             returnBuffer.AddRange(buffer);
             return returnBuffer.ToArray();
+        }
+
+        public bool IsValid()
+        {
+            return isValid;
         }
 
         public void Dispose()
