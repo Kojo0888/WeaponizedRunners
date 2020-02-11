@@ -6,9 +6,9 @@ namespace WeaponizedRunnersShared
 {
     public interface IClient
     {
-        public string ServerIP { get; set; }
-        public int ServerPort { get; set; }
+        string ServerIP { get; set; }
+        int ServerPort { get; set; }
 
-        public void Disconnect();
+        void Disconnect();
     }
 }
