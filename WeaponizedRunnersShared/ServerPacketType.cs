@@ -8,8 +8,8 @@ namespace WeaponizedRunnersShared
     {
         welcome = 1,
         spawnPlayer,
+        message,
         playerPosition,
-        playerRotation,
-        message
+        playerRotation
     }
 }

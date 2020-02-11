@@ -12,9 +12,9 @@ namespace GameServer
             using (Packet packet = new Packet((int)ServerPacketType.welcome))
             {
                 packet.Write(msg);
-                packet.Write(client.id);
+                //packet.Write(client.id);
 
-                packet.WriteLength();
+                //packet.WriteLength();
 
                 client.tcp.SendData(packet);
             }
@@ -50,10 +50,11 @@ namespace GameServer
 
         public void Message(Client client, string message)
         {
-            using (Packet packet = new Packet((int)ServerPacketType.message))
+            using (Packet packet = new Packet())
             {
+                packet.Write((int)ServerPacketType.message);
                 packet.Write(message);
-                packet.Write(client.id);
+                //packet.Write(client.id);
 
                 //packet.WriteLength();
 

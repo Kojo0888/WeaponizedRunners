@@ -92,11 +92,11 @@ namespace WeaponizedRunnersServer.Server.Protocoles
 
             receivedData.SetBytes(data);
 
-            packetLength = receivedData.ReadInt();
-            if (packetLength <= 0)
-                return true;
+            //packetLength = receivedData.ReadInt();
+            //if (packetLength <= 0)
+            //    return true;
 
-            byte[] packetBytes = receivedData.ReadBytes(packetLength);
+            byte[] packetBytes = receivedData.ToArray();
             _parentClient.ClientReceiveManager.ExecuteOnMainThread(() =>
             {
                 using (Packet packet = new Packet(packetBytes))
