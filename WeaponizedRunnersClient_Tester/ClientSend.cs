@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Numerics;
+using System.Text;
 using WeaponizedRunnersClient_Tester;
 using WeaponizedRunnersShared;
 
@@ -11,8 +12,11 @@ public class ClientSend
     {
         using (Packet packet = new Packet((int)ClientPacketType.welcome))
         {
-            packet.Write(client.myId);
-            packet.Write("Test username");
+            packet.ClientId = client.myId;
+            var bytes = Encoding.UTF8.GetBytes("Test username");
+            packet.SetPacketContentBytes(bytes);
+
+            //packet.Write("Test username");
 
             client.tcp.SendData(packet);
         }

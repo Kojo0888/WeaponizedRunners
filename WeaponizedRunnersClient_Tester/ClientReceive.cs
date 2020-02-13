@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Numerics;
+using System.Text;
 using WeaponizedRunnersClient_Tester;
 using WeaponizedRunnersShared;
 
@@ -10,8 +11,9 @@ public class ClientReceive
 {
     public static void Welcome(Client client, Packet packet)
     {
-        string msg = packet.ReadString();
-        int myId = packet.ReadInt();
+        var bytes = packet.GetPacketContentBytes();
+        string msg = Encoding.UTF8.GetString(bytes);
+        int myId = packet.ClientId;
 
         Console.WriteLine($"Message from server: {msg}");
         client.myId = myId;
