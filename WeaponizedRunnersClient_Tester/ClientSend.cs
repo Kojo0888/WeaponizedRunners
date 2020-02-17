@@ -5,46 +5,31 @@ using System.Numerics;
 using System.Text;
 using WeaponizedRunnersClient_Tester;
 using WeaponizedRunnersShared;
+using WeaponizedRunnersShared.PacketContents;
 
 public class ClientSend
 {
     public void Welcome(Client client)
     {
-        using (Packet packet = new Packet((int)ClientPacketType.welcome))
-        {
-            packet.ClientId = client.myId;
-            var bytes = Encoding.UTF8.GetBytes("Test username");
-            packet.SetPacketContentBytes(bytes);
+        MessageContent packageContent = new MessageContent();
+        packageContent.Message = "Test username";
 
-            //packet.Write("Test username");
+        Packet packet = new Packet((int)PacketType.welcome);
+        packet.ClientId = client.myId;
+        packet.PacketContent = packageContent;
 
-            client.tcp.SendData(packet);
-        }
-    }
-
-    public void PlayerMovement(Client client, bool[] inputs)
-    {
-        using (Packet packet = new Packet((int)ClientPacketType.playerMovement))
-        {
-            packet.Write(inputs.Length);
-            foreach (bool input in inputs)
-            {
-                packet.Write(input);
-            }
-            //packet.Write(GameManager.players[client.myId].transform.rotation);
-
-            client.udp.SendData(packet);
-        }
+        client.tcp.SendData(packet);
     }
 
     public void Message(Client client, string message)
     {
-        using (Packet packet = new Packet((int)ClientPacketType.message))
-        {
-            packet.Write(client.myId);
-            packet.Write(message);
+        MessageContent packageContent = new MessageContent();
+        packageContent.Message = "Test username";
 
-            client.tcp.SendData(packet);
-        }
+        Packet packet = new Packet((int)PacketType.message);
+        packet.ClientId = client.myId;
+        packet.PacketContent = packageContent;
+
+        client.tcp.SendData(packet);
     }
 }

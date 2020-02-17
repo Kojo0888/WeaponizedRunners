@@ -79,9 +79,9 @@ namespace GameServer
                     return;
                 }
 
-                using (Packet _packet = new Packet(bytes))
+                using (Packet packet = new Packet(bytes))
                 {
-                    int clientId = _packet.ClientId;
+                    int clientId = packet.ClientId;
                     if (clientId == 0)
                     {
                         return;
@@ -95,7 +95,7 @@ namespace GameServer
 
                     if (Clients[clientId].udp.endPoint.ToString() == _clientEndPoint.ToString())
                     {
-                        Clients[clientId].udp.HandleData(_packet);
+                        Clients[clientId].udp.ReceiveData(packet);
                     }
                 }
             }

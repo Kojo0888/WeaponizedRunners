@@ -79,7 +79,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                     return;
                 }
 
-                _receivePackageAction(packet);
+                ReceiveData(packet);
             }
             catch(Exception ex)
             {
@@ -88,9 +88,11 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             }
         }
 
+        public void ReceiveData(Packet packet)
+        {
+            _receivePackageAction(packet);
+        }
 
-
-        /// <summary>Disconnects from the server and cleans up the UDP connection.</summary>
         public void Disconnect()
         {
             //_parentClient.Disconnect();
@@ -100,7 +102,4 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             socket = null;
         }
     }
-
-    /// <summary>Initializes all necessary client data.</summary>
-   
 }

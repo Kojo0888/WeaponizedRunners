@@ -18,8 +18,8 @@ namespace GameServer
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ClientPacketType.welcome, ServerReceive.Welcome },
-                { (int)ClientPacketType.message, ServerReceive.Message },
+                { (int)PacketType.welcome, ServerReceive.Welcome },
+                { (int)PacketType.message, ServerReceive.Message },
             };
         }
 

@@ -13,7 +13,7 @@ namespace GameServer
             MessageContent packetContent = new MessageContent();
             packetContent.Message = message;
 
-            Packet packet = new Packet((int)ServerPacketType.welcome);
+            Packet packet = new Packet((int)PacketType.welcome);
             packet.ClientId = client.id;
             packet.PacketContent = packetContent;
 
@@ -25,7 +25,7 @@ namespace GameServer
             MessageContent packetContent = new MessageContent();
             packetContent.Message = message;
 
-            Packet packet = new Packet((int)ServerPacketType.message);
+            Packet packet = new Packet((int)PacketType.message);
             packet.ClientId = client.id;
             packet.PacketContent = packetContent;
 

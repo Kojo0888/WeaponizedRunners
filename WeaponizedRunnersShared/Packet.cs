@@ -55,7 +55,7 @@ namespace WeaponizedRunnersShared
         private PacketContentBase CreatePacketContent(int packetContentTypeId)
         {
             switch(packetContentTypeId){
-                case (int)ClientPacketType.message:
+                case (int)PacketType.message:
                     return new MessageContent();
                 default:
                     throw new FormatException($"Package type id {packetContentTypeId} is not defined.");

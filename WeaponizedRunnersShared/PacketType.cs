@@ -4,10 +4,12 @@ using System.Text;
 
 namespace WeaponizedRunnersShared
 {
-    public enum ClientPacketType
+    public enum PacketType
     {
         welcome = 1,
-        playerMovement,
+        spawnPlayer,
+        playerPosition,
+        playerRotation,
         message
     }
 }

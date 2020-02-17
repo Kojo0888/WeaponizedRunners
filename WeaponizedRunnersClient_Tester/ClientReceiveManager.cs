@@ -19,11 +19,8 @@ namespace WeaponizedRunnersClient_Tester
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ServerPacketType.welcome, ClientReceive.Welcome },
-                { (int)ServerPacketType.spawnPlayer, ClientReceive.SpawnPlayer },
-                { (int)ServerPacketType.playerPosition, ClientReceive.PlayerPosition },
-                { (int)ServerPacketType.playerRotation, ClientReceive.PlayerRotation },
-                { (int)ServerPacketType.message, ClientReceive.Message },
+                { (int)PacketType.welcome, ClientReceive.Welcome },
+                { (int)PacketType.message, ClientReceive.Message },
             };
         }
 
