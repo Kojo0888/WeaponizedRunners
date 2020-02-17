@@ -5,6 +5,7 @@ using System.Text;
 using System.Numerics;
 using System.Net.Sockets;
 using WeaponizedRunnersShared;
+using WeaponizedRunnersShared.PacketContents;
 
 namespace WeaponizedRunnersShared.TransferProtocoles
 {
@@ -22,8 +23,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             endPoint = new IPEndPoint(IPAddress.Parse(_parentClient.ServerIP), _parentClient.ServerPort);
         }
 
-        /// <summary>Attempts to connect to the server via UDP.</summary>
-        /// <param name="_localPort">The port number to bind the UDP socket to.</param>
         public void Connect(int _localPort)
         {
             socket = new UdpClient(_localPort);
