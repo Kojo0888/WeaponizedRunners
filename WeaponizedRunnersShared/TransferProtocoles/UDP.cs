@@ -72,13 +72,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             {
                 byte[] data = socket.EndReceive(_result, ref endPoint);
                 socket.BeginReceive(ReceiveCallback, null);
-
+                Console.WriteLine("saaddadasdsa");
                 Packet packet = new Packet(data);
-                if (!packet.IsValid())
-                {
-                    _parentClient.Disconnect();
-                    return;
-                }
 
                 ReceiveData(packet);
             }
@@ -90,7 +85,20 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public void SendData(Packet packet)
         {
-
+            try
+            {
+                //_packet.InsertInt((int)ClientPacketType.message); // Insert the client's ID at the start of the packet
+                if (socket != null)
+                {
+                    var bytes = packet.GetPacketBytes();
+                    socket.BeginSend(bytes, bytes.Length, null, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unable to send packet ({ex.Message}).");
+                //Debug.Log($"Error sending data to server via UDP: {_ex}");
+            }
         }
 
         public void ReceiveData(Packet packet)
