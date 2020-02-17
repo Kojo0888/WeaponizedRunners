@@ -37,13 +37,13 @@ namespace WeaponizedRunnersShared
         public Packet(int packetTypeId) : this()
         {
             PacketTypeId = packetTypeId;
-            PacketContent = CreatePacketContent(packetTypeId);
+            //PacketContent = CreatePacketContent(packetTypeId);
         }
         
         public Packet(int packetTypeId, int clientId) : this()
         {
             PacketTypeId = packetTypeId;
-            PacketContent = CreatePacketContent(packetTypeId);
+            //PacketContent = CreatePacketContent(packetTypeId);
             ClientId = clientId;
         }
 
@@ -55,6 +55,8 @@ namespace WeaponizedRunnersShared
         private PacketContentBase CreatePacketContent(int packetContentTypeId)
         {
             switch(packetContentTypeId){
+                case (int)PacketType.welcome:
+                    return new MessageContent();
                 case (int)PacketType.message:
                     return new MessageContent();
                 default:
@@ -77,12 +79,13 @@ namespace WeaponizedRunnersShared
 
         public void SetPacketBytes(byte[] incomingBytes)
         {
-            if (incomingBytes.Length < 4)
+            if (incomingBytes.Length < 8)
             {
                 isValid = false;
                 return;
             }
             PacketTypeId = BitConverter.ToInt32(incomingBytes, 0);
+            PacketContent = CreatePacketContent(PacketTypeId);
             ClientId = BitConverter.ToInt32(incomingBytes, 4);
             PacketContent.SetBytes(incomingBytes.Skip(8).ToArray());
             isValid = true;

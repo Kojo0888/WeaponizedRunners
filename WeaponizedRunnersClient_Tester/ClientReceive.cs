@@ -16,7 +16,7 @@ public class ClientReceive
         int myId = packet.ClientId;
 
         Console.WriteLine($"Message from server: {packetContent.Message}");
-        client.myId = myId;
+        client.Id = myId;
         client.Send.Welcome(client);
 
         // Now that we have the client's id, connect UDP

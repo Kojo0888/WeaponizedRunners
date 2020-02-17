@@ -14,7 +14,7 @@ namespace GameServer
             packetContent.Message = message;
 
             Packet packet = new Packet((int)PacketType.welcome);
-            packet.ClientId = client.id;
+            packet.ClientId = client.Id;
             packet.PacketContent = packetContent;
 
             client.tcp.SendData(packet);
@@ -26,7 +26,7 @@ namespace GameServer
             packetContent.Message = message;
 
             Packet packet = new Packet((int)PacketType.message);
-            packet.ClientId = client.id;
+            packet.ClientId = client.Id;
             packet.PacketContent = packetContent;
 
             client.tcp.SendData(packet);

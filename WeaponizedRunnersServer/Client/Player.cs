@@ -77,7 +77,7 @@ namespace GameServer
             {
                 if (_client.player != null)
                 {
-                    if (_client.id != id)
+                    if (_client.Id != id)
                     {
                         //Server.Send.SpawnPlayer(_parentClient);
                     }

@@ -50,16 +50,25 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         private void ConnectCallback(IAsyncResult result)
         {
-            tcpClient.EndConnect(result);
-
-            if (!tcpClient.Connected)
+            try
             {
-                return;
-            }
 
-            stream = tcpClient.GetStream();
-            receivedData = new Packet();
-            stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
+                tcpClient.EndConnect(result);
+
+                if (!tcpClient.Connected)
+                {
+                    return;
+                }
+
+                stream = tcpClient.GetStream();
+                receivedData = new Packet();
+                stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Unable to find server endpoint");
+                Environment.Exit(0);
+            }
         }
 
         public void SendData(Packet packet)
@@ -74,7 +83,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine($"Unable to send packet ({ex.Message})");
             }
         }
 
@@ -96,7 +105,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
                 stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 Disconnect();

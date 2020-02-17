@@ -32,8 +32,8 @@ namespace WeaponizedRunnersClient_Tester
             {
                 Console.WriteLine(ex.ToString());
             }
-            Console.WriteLine("Finished...");
-            Console.ReadKey();
+            //Console.WriteLine("Finished...");
+            //Console.ReadKey();
         }
     }
 }

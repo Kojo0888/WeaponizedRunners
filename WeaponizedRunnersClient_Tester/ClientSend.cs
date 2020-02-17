@@ -15,7 +15,7 @@ public class ClientSend
         packageContent.Message = "Test username";
 
         Packet packet = new Packet((int)PacketType.welcome);
-        packet.ClientId = client.myId;
+        packet.ClientId = client.Id;
         packet.PacketContent = packageContent;
 
         client.tcp.SendData(packet);
@@ -24,10 +24,10 @@ public class ClientSend
     public void Message(Client client, string message)
     {
         MessageContent packageContent = new MessageContent();
-        packageContent.Message = "Test username";
+        packageContent.Message = message;
 
         Packet packet = new Packet((int)PacketType.message);
-        packet.ClientId = client.myId;
+        packet.ClientId = client.Id;
         packet.PacketContent = packageContent;
 
         client.tcp.SendData(packet);

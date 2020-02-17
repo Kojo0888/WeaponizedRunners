@@ -13,7 +13,7 @@ namespace WeaponizedRunnersClient_Tester
     {
         public string ServerIP { get; set; } = "127.0.0.1";
         public int ServerPort { get; set; } = 26950;
-        public int myId = 0;
+        public int Id { get; set; } = 0;
         public TCP tcp;
         public UDP udp;
 
@@ -36,8 +36,8 @@ namespace WeaponizedRunnersClient_Tester
                      ClientReceiveManager.ProcessPacket(packet.PacketTypeId, this, packet);
                 });
             };
-            tcp = new TCP(myId, this, receivePacketAction);
-            udp = new UDP(myId, this, receivePacketAction);
+            tcp = new TCP(Id, this, receivePacketAction);
+            udp = new UDP(Id, this, receivePacketAction);
         }
 
         public void ConnectToServer()
@@ -51,8 +51,8 @@ namespace WeaponizedRunnersClient_Tester
             if (isConnected)
             {
                 isConnected = false;
-                tcp.Disconnect();
-                udp.Disconnect();
+                tcp?.Disconnect();
+                udp?.Disconnect();
 
                 Console.WriteLine("Disconnected from server.");
             }

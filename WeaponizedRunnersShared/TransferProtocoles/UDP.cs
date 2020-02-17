@@ -30,10 +30,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             socket.Connect(endPoint);
             socket.BeginReceive(ReceiveCallback, null);
 
-            using (Packet _packet = new Packet())
-            {
-                SendData(_packet);
-            }
+            FinishInitializingConnection();
         }
 
         public void Connect(IPEndPoint _endPoint)
@@ -44,16 +41,20 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             socket.BeginReceive(ReceiveCallback, null);
         }
 
-        /// <summary>Sends data to the client via UDP.</summary>
-        /// <param name="_packet">The packet to send.</param>
-        public void SendData(Packet _packet)
+        public void FinishInitializingConnection()
         {
             try
             {
-                //_packet.InsertInt((int)ClientPacketType.message); // Insert the client's ID at the start of the packet
+                var packetContent = new MessageContent();
+                packetContent.Message = "Welcome to server :)";
+
+                Packet packet = new Packet((int)PacketType.welcome);
+                packet.ClientId = _parentClient.Id;
+                packet.PacketContent = packetContent;
+
                 if (socket != null)
                 {
-                    var bytes = _packet.GetPacketBytes();
+                    var bytes = packet.GetPacketBytes();
                     socket.BeginSend(bytes, bytes.Length, null, null);
                 }
             }
@@ -81,9 +82,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
                 ReceiveData(packet);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                Console.WriteLine(ex.ToString());
                 _parentClient.Disconnect();
             }
         }
@@ -98,7 +98,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             //_parentClient.Disconnect();
 
             endPoint = null;
-            socket.Close();
+            socket?.Close();
             socket = null;
         }
     }
