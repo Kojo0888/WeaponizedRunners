@@ -88,6 +88,11 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             }
         }
 
+        public void SendData(Packet packet)
+        {
+
+        }
+
         public void ReceiveData(Packet packet)
         {
             _receivePackageAction(packet);
