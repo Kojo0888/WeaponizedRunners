@@ -2,63 +2,34 @@
 using System.Collections.Generic;
 using System.Text;
 using WeaponizedRunnersShared;
+using WeaponizedRunnersShared.PacketContents;
 
 namespace GameServer
 {
     public class ServerSend
     {
-        public void Welcome(Client client, string msg)
+        public void Welcome(Client client, string message)
         {
-            using (Packet packet = new Packet((int)ServerPacketType.welcome))
-            {
-                packet.Write(msg);
-                packet.Write(client.id);
+            MessageContent packetContent = new MessageContent();
+            packetContent.Message = message;
 
-                packet.WriteLength();
+            Packet packet = new Packet((int)ServerPacketType.welcome);
+            packet.ClientId = client.id;
+            packet.PacketContent = packetContent;
 
-                client.tcp.SendData(packet);
-            }
-        }
-
-        public void SpawnPlayer(Client client)
-        {
-            using (Packet packet = new Packet((int)ServerPacketType.spawnPlayer))
-            {
-                packet.Write(client.player.id);
-                packet.Write(client.player.username);
-                packet.Write(client.player.position);
-                packet.Write(client.player.rotation);
-
-                packet.WriteLength();
-
-                client.tcp.SendData(packet);
-            }
-        }
-
-        public void PlayerPosition(Client client)
-        {
-            using (Packet packet = new Packet((int)ServerPacketType.playerPosition))
-            {
-                packet.Write(client.player.id);
-                packet.Write(client.player.position);
-
-                packet.WriteLength();
-
-                client.tcp.SendData(packet);
-            }
+            client.tcp.SendData(packet);
         }
 
         public void Message(Client client, string message)
         {
-            using (Packet packet = new Packet((int)ServerPacketType.message))
-            {
-                packet.Write(message);
-                packet.Write(client.id);
+            MessageContent packetContent = new MessageContent();
+            packetContent.Message = message;
 
-                //packet.WriteLength();
+            Packet packet = new Packet((int)ServerPacketType.message);
+            packet.ClientId = client.id;
+            packet.PacketContent = packetContent;
 
-                client.tcp.SendData(packet);
-            }
+            client.tcp.SendData(packet);
         }
     }
 }

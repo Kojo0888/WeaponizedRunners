@@ -3,40 +3,28 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using WeaponizedRunnersShared;
+using WeaponizedRunnersShared.PacketContents;
 
 namespace GameServer
 {
     class ServerReceive
     {
-        public static void Welcome(int fromClient, Packet packet)
+        public static void Welcome(Packet packet)
         {
-            int clientIdCheck = packet.ReadInt();
-            string username = packet.ReadString();
+            int fromClient = packet.ClientId;
+            var packageContent = packet.GetPacketContent<MessageContent>();
+            string message = packageContent.Message;
 
-            Console.WriteLine($"{Server.Clients[fromClient].tcp.tcpClient.Client.RemoteEndPoint} connected successfully and is now player {fromClient}. Username: \"{username}\"");
-            if (fromClient != clientIdCheck)
-            {
-                Console.WriteLine($"Player \"{username}\" (ID: {fromClient}) has assumed the wrong client ID ({clientIdCheck})!");
-            }
-            Server.Clients[fromClient].player.SendIntoGame();
+            Console.WriteLine($"{Server.Clients[fromClient].tcp.tcpClient.Client.RemoteEndPoint} connected successfully and is now player {fromClient}. Username: \"{message}\"");
+
+            //Server.Clients[fromClient].player.SendIntoGame();
         }
 
-        public static void PlayerMovement(int fromClient, Packet packet)
+        public static void Message(Packet packet)
         {
-            bool[] inputs = new bool[packet.ReadInt()];
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                inputs[i] = packet.ReadBool();
-            }
-            Quaternion rotation = packet.ReadQuaternion();
-
-            Server.Clients[fromClient].player.SetInput(inputs, rotation);
-        }
-
-        public static void Message(int fromClient, Packet packet)
-        {
-            int clientIdCheck = packet.ReadInt();
-            string message = packet.ReadString();
+            var clientId = packet.ClientId;
+            var packageContent = packet.GetPacketContent<MessageContent>();
+            string message = packageContent.Message;
 
             Console.WriteLine(DateTime.Now.ToString() + "\t" + message);
         }

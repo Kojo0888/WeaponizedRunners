@@ -11,7 +11,7 @@ namespace GameServer
         private readonly List<Action> executeCopiedOnMainThread = new List<Action>();
         private bool actionToExecuteOnMainThread = false;
 
-        public delegate void PacketHandler(int _fromClient, Packet _packet);
+        public delegate void PacketHandler(Packet _packet);
         private Dictionary<int, PacketHandler> packetHandlers { get; set; }
 
         public ServerReceiveManager()
@@ -19,14 +19,13 @@ namespace GameServer
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)ClientPacketType.welcome, ServerReceive.Welcome },
-                { (int)ClientPacketType.playerMovement, ServerReceive.PlayerMovement },
                 { (int)ClientPacketType.message, ServerReceive.Message },
             };
         }
 
-        public void ProcessPacket(int packetHandlerId, int clientId, Packet packet)
+        public void ProcessPacket(int packetHandlerId, Packet packet)
         {
-            packetHandlers[packetHandlerId](clientId, packet);
+            packetHandlers[packetHandlerId](packet);
         }
 
         public void ExecuteOnMainThread(Action _action)

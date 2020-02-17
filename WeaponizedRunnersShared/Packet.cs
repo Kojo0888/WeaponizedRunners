@@ -15,13 +15,15 @@ namespace WeaponizedRunnersShared
         public int ClientId;
 
         private int _packetTypeId;
-        public int PacketTypeId{
-            get {
+        public int PacketTypeId
+        {
+            get 
+            {
                 return _packetTypeId;
             }
-            set {
+            set 
+            {
                 _packetTypeId = value;
-                PacketContent = CreatePacketContent(value);
             }
         }
 
@@ -35,11 +37,13 @@ namespace WeaponizedRunnersShared
         public Packet(int packetTypeId) : this()
         {
             PacketTypeId = packetTypeId;
+            PacketContent = CreatePacketContent(packetTypeId);
         }
         
         public Packet(int packetTypeId, int clientId) : this()
         {
             PacketTypeId = packetTypeId;
+            PacketContent = CreatePacketContent(packetTypeId);
             ClientId = clientId;
         }
 
@@ -65,6 +69,11 @@ namespace WeaponizedRunnersShared
                 throw new FormatException($"Packet tried to be parsed to {typeof(Type)} type, although it is {packetType} type");
             return parsedPacketContent;
         }
+
+        public void SetPacketContent(PacketContentBase packetContent, int packetTypeId){
+            PacketContent = packetContent;
+            PacketTypeId = packetTypeId;
+        } 
 
         public void SetPacketBytes(byte[] incomingBytes)
         {

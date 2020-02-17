@@ -81,22 +81,21 @@ namespace GameServer
 
                 using (Packet _packet = new Packet(bytes))
                 {
-                    int _clientId = _packet.ClientId;
-
-                    if (_clientId == 0)
+                    int clientId = _packet.ClientId;
+                    if (clientId == 0)
                     {
                         return;
                     }
 
-                    if (Clients[_clientId].udp.endPoint == null)
+                    if (Clients[clientId].udp.endPoint == null)
                     {
-                        Clients[_clientId].udp.Connect(_clientEndPoint);
+                        Clients[clientId].udp.Connect(_clientEndPoint);
                         return;
                     }
 
-                    if (Clients[_clientId].udp.endPoint.ToString() == _clientEndPoint.ToString())
+                    if (Clients[clientId].udp.endPoint.ToString() == _clientEndPoint.ToString())
                     {
-                        Clients[_clientId].udp.HandleData(_packet);
+                        Clients[clientId].udp.HandleData(_packet);
                     }
                 }
             }

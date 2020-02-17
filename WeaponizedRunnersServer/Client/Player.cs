@@ -61,7 +61,7 @@ namespace GameServer
             Vector3 _moveDirection = _right * _inputDirection.X + _forward * _inputDirection.Y;
             position += _moveDirection * moveSpeed;
 
-            Server.Send.PlayerPosition(_parentClient);
+            //Server.Send.PlayerPosition(_parentClient);
             //ServerSend.PlayerRotation(this);
         }
 
@@ -79,7 +79,7 @@ namespace GameServer
                 {
                     if (_client.id != id)
                     {
-                        Server.Send.SpawnPlayer(_parentClient);
+                        //Server.Send.SpawnPlayer(_parentClient);
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace GameServer
             {
                 if (_client.player != null)
                 {
-                    Server.Send.SpawnPlayer(_parentClient);
+                    //Server.Send.SpawnPlayer(_parentClient);
                 }
             }
         }

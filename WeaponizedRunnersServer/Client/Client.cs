@@ -26,7 +26,7 @@ namespace GameServer
             {
                 Server.ReceiveManager.ExecuteOnMainThread(() =>
                 {
-                    Server.ReceiveManager.ProcessPacket(packet.PacketTypeId, id, packet);
+                    Server.ReceiveManager.ProcessPacket(packet.PacketTypeId, packet);
                 });
             };
             tcp = new TCP(id, this, receivePacketAction);
