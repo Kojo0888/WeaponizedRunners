@@ -8,13 +8,12 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 {
     public class TCP
     {
+        byte[] receiveBuffer;
+
         public TcpClient tcpClient;
 
         private Action<Packet> _receivePackageAction;
 
-        private NetworkStream stream;
-        private Packet receivedData;
-        private byte[] receiveBuffer;
         private IClient _parentClient;
         public TCP(int id, IClient client, Action<Packet> action)
         {
@@ -22,46 +21,38 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             _receivePackageAction = action;
         }
 
-        public void Connect(TcpClient _socket)
+        public void Connect(TcpClient tcpClient = null)
         {
-            tcpClient = _socket;
+            if (tcpClient == null)
+                tcpClient = new TcpClient();
+                
             tcpClient.ReceiveBufferSize = Constants.PACKET_DATA_BUFFER_SIZE;
             tcpClient.SendBufferSize = Constants.PACKET_DATA_BUFFER_SIZE;
+            this.tcpClient = tcpClient;
 
-            stream = tcpClient.GetStream();
-
-            receivedData = new Packet();
             receiveBuffer = new byte[Constants.PACKET_DATA_BUFFER_SIZE];
-
-            stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
-        }
-
-        public void Connect()
-        {
-            tcpClient = new TcpClient
+            if(!tcpClient.Connected)
             {
-                ReceiveBufferSize = Constants.PACKET_DATA_BUFFER_SIZE,
-                SendBufferSize = Constants.PACKET_DATA_BUFFER_SIZE
-            };
-
-            receiveBuffer = new byte[Constants.PACKET_DATA_BUFFER_SIZE];
-            tcpClient.BeginConnect(_parentClient.ServerIP, _parentClient.ServerPort, ConnectCallback, tcpClient);
+                tcpClient.BeginConnect(_parentClient.ServerIP, _parentClient.ServerPort, ConnectCallback, tcpClient);
+            }
+            else
+            {
+                NetworkStream stream = this.tcpClient.GetStream();
+                stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
+            }
         }
 
         private void ConnectCallback(IAsyncResult result)
         {
             try
             {
-
                 tcpClient.EndConnect(result);
-
                 if (!tcpClient.Connected)
                 {
                     return;
                 }
-
-                stream = tcpClient.GetStream();
-                receivedData = new Packet();
+                Console.WriteLine("TPC Connected");
+                NetworkStream stream = tcpClient.GetStream();
                 stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
             }
             catch (Exception)
@@ -78,6 +69,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 if (tcpClient != null)
                 {
                     var bytes = packet.GetPacketBytes();
+                    NetworkStream stream = tcpClient.GetStream();
                     stream.BeginWrite(bytes, 0, bytes.Length, null, null);
                 }
             }
@@ -91,6 +83,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         {
             try
             {
+                NetworkStream stream = tcpClient.GetStream();
                 int byteLength = stream.EndRead(result);
                 if (byteLength <= 0)
                 {
@@ -116,8 +109,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         {
             //_parentClient.Disconnect();
             tcpClient?.Close();
-            stream = null;
-            receivedData = null;
             receiveBuffer = null;
             tcpClient = null;
         }

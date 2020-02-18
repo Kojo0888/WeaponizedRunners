@@ -12,7 +12,7 @@ namespace WeaponizedRunnersClient_Tester
             {
                 Console.Title = "Weaponized runners test client";
                 Client client = new Client("127.0.0.1", 26950);
-                client.ConnectToServer();
+                client.Connect();
                 Thread.Sleep(500);
                 Task task = Task.Run(() => {
                     while (true)

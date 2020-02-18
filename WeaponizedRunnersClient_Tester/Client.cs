@@ -40,10 +40,11 @@ namespace WeaponizedRunnersClient_Tester
             udp = new UDP(Id, this, receivePacketAction);
         }
 
-        public void ConnectToServer()
+        public void Connect()
         {
             isConnected = true;
             tcp.Connect();
+            //udp.Connect();
         }
 
         public void Disconnect()

@@ -29,7 +29,7 @@ namespace GameServer
             packet.ClientId = client.Id;
             packet.PacketContent = packetContent;
 
-            client.udp.SendData(packet);
+            client.tcp.SendData(packet);
         }
     }
 }

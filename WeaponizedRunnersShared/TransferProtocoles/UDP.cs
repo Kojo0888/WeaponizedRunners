@@ -11,7 +11,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 {
     public class UDP
     {
-        public UdpClient socket;
+        public UdpClient udpClient;
         public IPEndPoint endPoint;
         private IClient _parentClient;
         private Action<Packet> _receivePackageAction;
@@ -23,22 +23,22 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             endPoint = new IPEndPoint(IPAddress.Parse(_parentClient.ServerIP), _parentClient.ServerPort);
         }
 
-        public void Connect(int _localPort)
+        public void Connect(IPEndPoint endPoint)
         {
-            socket = new UdpClient(_localPort);
-
-            socket.Connect(endPoint);
-            socket.BeginReceive(ReceiveCallback, null);
-
-            FinishInitializingConnection();
-        }
-
-        public void Connect(IPEndPoint _endPoint)
-        {
-            endPoint = _endPoint;
-            socket = new UdpClient(endPoint);
-            socket.Connect(endPoint);
-            socket.BeginReceive(ReceiveCallback, null);
+            try
+            {
+                Console.WriteLine("Attempting UDP Connection");
+                this.endPoint = endPoint;
+                udpClient = new UdpClient();
+                udpClient.Connect("127.0.0.1", endPoint.Port);
+                udpClient.BeginReceive(ReceiveCallback, null);
+                Console.WriteLine("UDP Connected");
+                //FinishInitializingConnection();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public void FinishInitializingConnection()
@@ -52,10 +52,10 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 packet.ClientId = _parentClient.Id;
                 packet.PacketContent = packetContent;
 
-                if (socket != null)
+                if (udpClient != null)
                 {
                     var bytes = packet.GetPacketBytes();
-                    socket.BeginSend(bytes, bytes.Length, null, null);
+                    udpClient.BeginSend(bytes, bytes.Length, null, null);
                 }
             }
             catch (Exception ex)
@@ -70,14 +70,14 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         {
             try
             {
-                byte[] data = socket.EndReceive(_result, ref endPoint);
-                socket.BeginReceive(ReceiveCallback, null);
-                Console.WriteLine("saaddadasdsa");
+                byte[] data = udpClient.EndReceive(_result, ref endPoint);
+                udpClient.BeginReceive(ReceiveCallback, null);
+
                 Packet packet = new Packet(data);
 
                 ReceiveData(packet);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _parentClient.Disconnect();
             }
@@ -88,11 +88,13 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             try
             {
                 //_packet.InsertInt((int)ClientPacketType.message); // Insert the client's ID at the start of the packet
-                if (socket != null)
+                if (udpClient != null)
                 {
                     var bytes = packet.GetPacketBytes();
-                    socket.BeginSend(bytes, bytes.Length, null, null);
+                    udpClient.BeginSend(bytes, bytes.Length, null, null);
                 }
+                else
+                    Console.WriteLine("SendData: udpClient is null");
             }
             catch (Exception ex)
             {
@@ -111,8 +113,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             //_parentClient.Disconnect();
 
             endPoint = null;
-            socket?.Close();
-            socket = null;
+            udpClient?.Close();
+            udpClient = null;
         }
     }
 }

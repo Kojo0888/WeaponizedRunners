@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Numerics;
@@ -29,7 +30,7 @@ public class ClientSend
         Packet packet = new Packet((int)PacketType.message);
         packet.ClientId = client.Id;
         packet.PacketContent = packageContent;
-
-        client.udp.SendData(packet);
+       
+        client.tcp.SendData(packet);
     }
 }

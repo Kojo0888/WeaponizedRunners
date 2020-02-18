@@ -84,14 +84,13 @@ namespace GameServer
                     int clientId = packet.ClientId;
                     if (clientId == 0)
                     {
+                        Console.WriteLine("500: ClientID: " + clientId);
                         return;
                     }
 
-                    if (Clients[clientId].udp.endPoint == null)
-                    {
-                        Clients[clientId].udp.Connect(_clientEndPoint);
-                        return;
-                    }
+                    //if(Clients[clientId])
+                    //Clients[clientId].udp.Connect(_clientEndPoint);
+
 
                     if (Clients[clientId].udp.endPoint.ToString() == _clientEndPoint.ToString())
                     {
