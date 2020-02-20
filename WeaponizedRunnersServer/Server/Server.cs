@@ -74,11 +74,6 @@ namespace GameServer
                 byte[] bytes = udpListener.EndReceive(_result, ref _clientEndPoint);
                 udpListener.BeginReceive(UDPReceiveCallback, null);
 
-                if (bytes.Length < 4)
-                {
-                    return;
-                }
-
                 using (Packet packet = new Packet(bytes))
                 {
                     int clientId = packet.ClientId;
@@ -88,14 +83,8 @@ namespace GameServer
                         return;
                     }
 
-                    //if(Clients[clientId])
                     //Clients[clientId].udp.Connect(_clientEndPoint);
-
-
-                    if (Clients[clientId].udp.endPoint.ToString() == _clientEndPoint.ToString())
-                    {
-                        Clients[clientId].udp.ReceiveData(packet);
-                    }
+                    Clients[clientId].udp.ReceiveData(packet);
                 }
             }
             catch (Exception _ex)

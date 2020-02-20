@@ -26,7 +26,7 @@ namespace GameServer
             var packageContent = packet.GetPacketContent<MessageContent>();
             string message = packageContent.Message;
 
-            Console.WriteLine(DateTime.Now.ToString() + "\t" + message);
+            Console.WriteLine(DateTime.Now.ToString() +$"(ClientId:{clientId})"+ "\t" + message);
         }
     }
 }

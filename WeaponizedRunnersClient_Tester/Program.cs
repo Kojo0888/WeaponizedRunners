@@ -11,8 +11,8 @@ namespace WeaponizedRunnersClient_Tester
             try
             {
                 Console.Title = "Weaponized runners test client";
-                Client client = new Client("127.0.0.1", 26950);
-                client.Connect();
+                Client client = new Client();
+                client.Connect("127.0.0.1", 26951);
                 Thread.Sleep(500);
                 Task task = Task.Run(() => {
                     while (true)

@@ -10,7 +10,7 @@ namespace GameServer
             try
             {
                 Console.Title = "Weaponized Runners Server";
-                Server.Start(50, 26950);
+                Server.Start(50, 26951);
 
                 while (true)
                 {

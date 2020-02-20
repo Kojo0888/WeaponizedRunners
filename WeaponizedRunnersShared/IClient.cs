@@ -9,7 +9,7 @@ namespace WeaponizedRunnersShared
         string ServerIP { get; set; }
         int ServerPort { get; set; }
 
-        int Id {get;set;}
+        int ServerId {get;set;}
         void Disconnect();
     }
 }

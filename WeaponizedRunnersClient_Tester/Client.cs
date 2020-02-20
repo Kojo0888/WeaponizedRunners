@@ -11,9 +11,13 @@ namespace WeaponizedRunnersClient_Tester
 {
     public class Client : IClient
     {
-        public string ServerIP { get; set; } = "127.0.0.1";
-        public int ServerPort { get; set; } = 26950;
+        public string IP { get; set; } 
+        public int Port { get; set; } 
         public int Id { get; set; } = 0;
+        public string ServerIP { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ServerPort { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ServerId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public TCP tcp;
         public UDP udp;
 
@@ -22,10 +26,8 @@ namespace WeaponizedRunnersClient_Tester
 
         private bool isConnected = false;
 
-        public Client(string ip, int port)
+        public Client()
         {
-            ServerIP = ip;
-            ServerPort = port;
             ClientReceiveManager = new ClientReceiveManager();
             Send = new ClientSend();
 
@@ -40,11 +42,11 @@ namespace WeaponizedRunnersClient_Tester
             udp = new UDP(Id, this, receivePacketAction);
         }
 
-        public void Connect()
+        public void Connect(string ip, int port)
         {
             isConnected = true;
-            tcp.Connect();
-            //udp.Connect();
+            tcp.Connect(ip, port);
+            udp.Connect(ip, port);
         }
 
         public void Disconnect()
@@ -56,6 +58,7 @@ namespace WeaponizedRunnersClient_Tester
                 udp?.Disconnect();
 
                 Console.WriteLine("Disconnected from server.");
+                Environment.Exit(-1);
             }
         }
     }

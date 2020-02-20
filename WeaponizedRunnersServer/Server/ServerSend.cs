@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using WeaponizedRunnersShared;
 using WeaponizedRunnersShared.PacketContents;
@@ -14,10 +15,13 @@ namespace GameServer
             packetContent.Message = message;
 
             Packet packet = new Packet((int)PacketType.welcome);
-            packet.ClientId = client.Id;
+            packet.ClientId = client.ServerId;
             packet.PacketContent = packetContent;
 
             client.tcp.SendData(packet);
+            var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
+            Console.WriteLine($"Welcome method: address: {endpoint.Address.ToString()}, port:{endpoint.Port}");
+            //client.udp.Connect(endpoint.Address.ToString(), endpoint.Port);
         }
 
         public void Message(Client client, string message)
@@ -26,10 +30,10 @@ namespace GameServer
             packetContent.Message = message;
 
             Packet packet = new Packet((int)PacketType.message);
-            packet.ClientId = client.Id;
+            packet.ClientId = client.ServerId;
             packet.PacketContent = packetContent;
 
-            client.tcp.SendData(packet);
+            client.udp.SendData(packet);
         }
     }
 }
