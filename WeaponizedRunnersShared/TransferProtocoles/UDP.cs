@@ -9,43 +9,56 @@ using WeaponizedRunnersShared.PacketContents;
 
 namespace WeaponizedRunnersShared.TransferProtocoles
 {
-    public class UDP
+    public class UDP2Way
     {
-        private UdpClient udpClient;
+        private UdpClient _udpClient;
+        private UdpClient _udpClientSend;
 
-        private int _port;
+        //private Socket _socketSend;
+
+        private int _portReceive;
+
+        private int _portSend;
         private string _ip;
 
         public IPEndPoint endPoint;
         private IClient _parentClient;
         private Action<Packet> _receivePackageAction;
 
-        public UDP(int id, IClient client, Action<Packet> action)
+        public UDP2Way(int id, IClient client, Action<Packet> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
             //endPoint = new IPEndPoint(IPAddress.Parse(_parentClient.ServerIP), _parentClient.ServerPort);
         }
 
-        public UdpClient Connect(string ip, int port)
+        public UdpClient Connect(string ip, int portReceive, int portSend)
         {
+            if(!Constants.AllowUDP)
+                throw new Exception("UDP is disabled");
             try
             {
                 _ip = ip;
-                _port = port;
-                
+                _portReceive = portReceive;
+                _portSend = portSend;
 
                 Console.WriteLine("Attempting UDP Connection");
-                //if(endpoint == null)
-                    this.endPoint = new IPEndPoint(IPAddress.Parse(_ip), _port);
-                //else 
-                //    this.endPoint = endpoint;
 
-                udpClient = new UdpClient(_port);
-                udpClient.Connect(_ip, _port);
-                udpClient.BeginReceive(ReceiveCallback, null);
-                Console.WriteLine($"UDP Connected (Endpoint: {this.endPoint})");
-                return udpClient;
+                var ipAddress = IPAddress.Parse(_ip);
+
+                endPoint = new IPEndPoint(ipAddress, _portReceive);
+
+                //_socketSend = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+                //_socketSend.Connect(ipAddress, _portSend);
+
+                _udpClientSend = new UdpClient(_portSend);
+                _udpClientSend.Connect(_ip, _portSend);
+
+                _udpClient = new UdpClient(_portReceive);
+                _udpClient.Connect(_ip, _portReceive);
+                _udpClient.BeginReceive(ReceiveCallback, null);
+                Console.WriteLine($"UDP Connected (Endpoint: {endPoint})");
+                return _udpClient;
             }
             catch (Exception ex)
             {
@@ -59,8 +72,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             try
             {
                 Console.WriteLine("Receiving data from: " + endPoint);
-                byte[] data = udpClient.EndReceive(_result, ref endPoint);
-                udpClient.BeginReceive(ReceiveCallback, null);
+                byte[] data = _udpClient.EndReceive(_result, ref endPoint);
+                _udpClient.BeginReceive(ReceiveCallback, null);
 
                 Packet packet = new Packet(data);
 
@@ -75,15 +88,18 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public void SendData(Packet packet)
         {
+            if(!Constants.AllowUDP)
+                throw new Exception("UDP is disabled");
+                
             try
             {
-                if (udpClient != null)
+                if (_udpClientSend != null)
                 {
                     var bytes = packet.GetPacketBytes();
-                    udpClient.BeginSend(bytes, bytes.Length, null, null);
+                    _udpClientSend.BeginSend(bytes, bytes.Length, null, null);
                 }
                 else
-                    Console.WriteLine("SendData: udpClient is null");
+                    Console.WriteLine("SendData: _socketSend is null");
             }
             catch (Exception ex)
             {
@@ -101,8 +117,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             //_parentClient.Disconnect();
 
             endPoint = null;
-            udpClient?.Close();
-            udpClient = null;
+            _udpClient?.Close();
+            _udpClient = null;
         }
     }
 }

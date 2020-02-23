@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using WeaponizedRunnersShared;
 
 namespace WeaponizedRunnersClient_Tester
 {
@@ -12,7 +13,7 @@ namespace WeaponizedRunnersClient_Tester
             {
                 Console.Title = "Weaponized runners test client";
                 Client client = new Client();
-                client.Connect("127.0.0.1", 26951);
+                client.Connect("127.0.0.1", Constants.PortTCP, Constants.ServerPortUDP);
                 Thread.Sleep(500);
                 Task task = Task.Run(() => {
                     while (true)

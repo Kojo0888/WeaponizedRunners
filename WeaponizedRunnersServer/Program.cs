@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using WeaponizedRunnersShared;
 
 namespace GameServer
 {
@@ -10,7 +11,7 @@ namespace GameServer
             try
             {
                 Console.Title = "Weaponized Runners Server";
-                Server.Start(50, 26951);
+                Server.Start(50, Constants.PortTCP);
 
                 while (true)
                 {

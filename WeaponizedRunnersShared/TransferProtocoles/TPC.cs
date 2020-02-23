@@ -30,6 +30,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             _port = port;
             _ip = ip;
 
+            //_socket =  new Socket(AddressFamily);
+
             this.tcpClient = new TcpClient();
 
             tcpClient.ReceiveBufferSize = Constants.PACKET_DATA_BUFFER_SIZE;
@@ -48,7 +50,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
             receiveBuffer = new byte[Constants.PACKET_DATA_BUFFER_SIZE];
 
-            NetworkStream stream = this.tcpClient.GetStream();
+            NetworkStream stream = tcpClient.GetStream();
             stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
         }
 

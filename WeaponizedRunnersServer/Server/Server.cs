@@ -52,17 +52,20 @@ namespace GameServer
         {
             TcpClient tpcClient = tcpListener.EndAcceptTcpClient(_result);
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-            Console.WriteLine($"Incoming connection from {tpcClient.Client.RemoteEndPoint}...");
+            EndPoint endpoint = tpcClient.Client.RemoteEndPoint;
+            Console.WriteLine($"Incoming connection from {endpoint}...");
 
             if(Clients.Values.Count >= MaxPlayers)
             {
-                Console.WriteLine($"{tpcClient.Client.RemoteEndPoint} failed to connect: Server full!");
+                Console.WriteLine($"{endpoint} failed to connect: Server full!");
                 return;
             }
             _currentClientId++;
             var client = new Client(_currentClientId);
             Clients[_currentClientId] = client;
             client.tcp.Connect(tpcClient);
+            if (Constants.AllowUDP)
+                client.udp.Connect(endpoint.ToString().Split(":")[0], Constants.ServerPortUDP, Constants.ClientPortUDP);
             Send.Welcome(client, "Welcome to the server!");
         }
 

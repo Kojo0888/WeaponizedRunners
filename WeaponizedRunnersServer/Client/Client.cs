@@ -14,9 +14,9 @@ namespace GameServer
         public int ServerId {get;set;}
         public Player player;
         public TCP tcp;
-        public UDP udp;
-        public string ServerIP { get; set; } = "127.0.0.1";
-        public int ServerPort { get; set; } = 27001;
+        public UDP2Way udp;
+        public string ServerIP { get; set; }
+        public int ServerPort { get; set; }
 
         public Client(int _clientId)
         {
@@ -30,7 +30,9 @@ namespace GameServer
                 });
             };
             tcp = new TCP(ServerId, this, receivePacketAction);
-            udp = new UDP(ServerId, this, receivePacketAction);
+
+            if(Constants.AllowUDP)
+                udp = new UDP2Way(ServerId, this, receivePacketAction);
 
             player = new Player(ServerId, "NewPlayer", new Vector3(0, 0, 0), this);
         }

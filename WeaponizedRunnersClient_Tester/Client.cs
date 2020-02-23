@@ -19,7 +19,7 @@ namespace WeaponizedRunnersClient_Tester
         public int ServerId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public TCP tcp;
-        public UDP udp;
+        public UDP2Way udp;
 
         public ClientReceiveManager ClientReceiveManager;
         public ClientSend Send;
@@ -39,14 +39,15 @@ namespace WeaponizedRunnersClient_Tester
                 });
             };
             tcp = new TCP(Id, this, receivePacketAction);
-            udp = new UDP(Id, this, receivePacketAction);
+            udp = new UDP2Way(Id, this, receivePacketAction);
         }
 
-        public void Connect(string ip, int port)
+        public void Connect(string ip, int tpcPort, int udpPort)
         {
             isConnected = true;
-            tcp.Connect(ip, port);
-            udp.Connect(ip, port);
+            tcp.Connect(ip, tpcPort);
+            if (Constants.AllowUDP)
+                udp.Connect(ip, Constants.ClientPortUDP, Constants.ServerPortUDP);
         }
 
         public void Disconnect()
