@@ -13,8 +13,6 @@ namespace GameServer
     {
         private static bool isRunning = false;
         public static int MaxPlayers { get; set; }
-        public static int Port { get; set; }
-
         public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
 
         private static TcpListener tcpListener;
@@ -25,29 +23,34 @@ namespace GameServer
 
         private static int _currentClientId;
 
-        public static void Start(int _maxPlayers, int _port)
+        public static void Start(int maxPlayers)
         {
-            MaxPlayers = _maxPlayers;
-            Port = _port;
+            MaxPlayers = maxPlayers;
 
             Console.WriteLine("Starting server...");
 
             ReceiveManager = new ServerReceiveManager();
             Send = new ServerSend();
 
-            tcpListener = new TcpListener(IPAddress.Any, Port);
+            tcpListener = new TcpListener(IPAddress.Any, Constants.PortTCP);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-            Console.WriteLine($"TCP Listener has Started (Port:{Port})");
+            Console.WriteLine($"TCP Listener has Started (Port:{Constants.PortTCP})");
 
             Action<Packet> serverUSPReceiveAction = (packet) => { ForwardUDPReceiveToClient(packet); };
             udpReceiver = new UDPReceive(serverUSPReceiveAction);
-            udpReceiver.StartReceiving(Constants.ServerPortUDP);
+            udpReceiver.StartListening(Constants.ServerPortUDP);
 
             Thread mainThread = new Thread(new ThreadStart(MainThread));
             isRunning = true;
             mainThread.Start();
             Console.WriteLine($"Server has started.");
+        }
+
+        internal static void RemoveClient(int id)
+        {
+            if (Clients.ContainsKey(id))
+                Clients.Remove(id);
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)
@@ -107,7 +110,7 @@ namespace GameServer
         {
             foreach (Client _client in Server.Clients.Values)
             {
-                //Handle client logic
+                //Handle client continous logic here
             }
         }
     }

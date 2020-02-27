@@ -35,10 +35,10 @@ namespace WeaponizedRunnersClient_Tester
                      ClientReceiveManager.ProcessPacket(packet.PacketTypeId, this, packet);
                 });
             };
-            tcp = new TCP(Id, this, receivePacketAction);
-            udpSend = new UDPSend(Id, this, receivePacketAction);
+            tcp = new TCP(this, receivePacketAction);
+            udpSend = new UDPSend(this, receivePacketAction);
             udpReceive = new UDPReceive(receivePacketAction);
-            udpReceive.StartReceiving(Constants.ClientPortUDP);
+            udpReceive.StartListening(Constants.ClientPortUDP);
         }
 
         public void Connect(string ip, int tpcPort, int udpPort)

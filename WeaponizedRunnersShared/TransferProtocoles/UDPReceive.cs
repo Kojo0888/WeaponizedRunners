@@ -22,7 +22,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             _receivePackageAction = action;
         }
 
-        public void StartReceiving(int port)
+        public void StartListening(int port)
         {
             _port = port;
             _udpListener = new UdpClient(port);

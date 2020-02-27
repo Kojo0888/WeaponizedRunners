@@ -29,10 +29,10 @@ namespace GameServer
                     Server.ReceiveManager.ProcessPacket(packet.PacketTypeId, packet);
                 });
             };
-            tcp = new TCP(Id, this, receivePacketAction);
+            tcp = new TCP(this, receivePacketAction);
 
             if(Constants.AllowUDP)
-                udp = new UDPSend(Id, this, receivePacketAction);
+                udp = new UDPSend(this, receivePacketAction);
 
             player = new Player(Id, "NewPlayer", new Vector3(0, 0, 0), this);
         }
@@ -43,7 +43,7 @@ namespace GameServer
         {
             Console.WriteLine($"{tcp?.tcpClient.Client.RemoteEndPoint} has disconnected.");
 
-            player = null;
+            Server.RemoveClient(Id);
 
             tcp?.Disconnect();
             udp?.Disconnect();

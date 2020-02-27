@@ -19,7 +19,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         private string _ip;
         private int _port;
 
-        public TCP(int id, IClient client, Action<Packet> action)
+        public TCP(IClient client, Action<Packet> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
@@ -79,7 +79,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                     stream.BeginWrite(bytes, 0, bytes.Length, null, null);
                 }
                 else
-                    Console.WriteLine("tpcClient is null");
+                    Console.WriteLine("500: tpcClient is null");
             }
             catch (Exception ex)
             {
@@ -97,19 +97,20 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                     int byteLength = stream.EndRead(result);
                     if (byteLength <= 0)
                     {
-                        _parentClient.Disconnect();
-                        return;
+                        Console.WriteLine($"TCP Received packet is empty.");
                     }
-
-                    byte[] data = new byte[byteLength];
-                    Array.Copy(receiveBuffer, data, byteLength);
-                    Packet packet = new Packet(data);
-                    _receivePackageAction(packet);
+                    else
+                    {
+                        byte[] data = new byte[byteLength];
+                        Array.Copy(receiveBuffer, data, byteLength);
+                        Packet packet = new Packet(data);
+                        _receivePackageAction(packet);
+                    }
 
                     stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
                 }
                 else
-                    Console.WriteLine("tpcClient is null");
+                    Console.WriteLine("500: tpcClient is null");
             }
             catch (Exception ex)
             {
@@ -120,10 +121,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public void Disconnect()
         {
-            //_parentClient.Disconnect();
             tcpClient?.Close();
-            receiveBuffer = null;
-            tcpClient = null;
         }
     }
 }

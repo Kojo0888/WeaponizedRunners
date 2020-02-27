@@ -19,7 +19,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         private IClient _parentClient;
         private Action<Packet> _receivePackageAction;
 
-        public UDPSend(int id, IClient client, Action<Packet> action)
+        public UDPSend(IClient client, Action<Packet> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
@@ -27,7 +27,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public UdpClient Connect(string ip, int port)
         {
-            if(!Constants.AllowUDP)
+            if (!Constants.AllowUDP)
                 throw new Exception("UDP is disabled");
             try
             {
@@ -50,9 +50,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public void SendData(Packet packet)
         {
-            if(!Constants.AllowUDP)
+            if (!Constants.AllowUDP)
                 throw new Exception("UDP is disabled");
-                
+
             try
             {
                 if (_udpClient != null)
@@ -77,7 +77,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         public void Disconnect()
         {
             _udpClient?.Close();
-            _udpClient = null;
         }
     }
 }

@@ -67,11 +67,6 @@ namespace WeaponizedRunnersShared
             return parsedPacketContent;
         }
 
-        public void SetPacketContent(PacketContentBase packetContent, int packetTypeId){
-            PacketContent = packetContent;
-            PacketTypeId = packetTypeId;
-        } 
-
         public void SetPacketBytes(byte[] incomingBytes)
         {
             if (incomingBytes.Length < 8)

@@ -11,7 +11,7 @@ namespace GameServer
             try
             {
                 Console.Title = "Weaponized Runners Server";
-                Server.Start(50, Constants.PortTCP);
+                Server.Start(50);
 
                 while (true)
                 {
