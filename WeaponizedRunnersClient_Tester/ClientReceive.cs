@@ -12,12 +12,12 @@ public class ClientReceive
 {
     public static void Welcome(Client client, Packet packet)
     {
-        var packetContent = packet.GetPacketContent<MessageContent>();
-        int myId = packet.ClientId;
+        //string msg = packet.ReadString();
+        //int myId = packet.ReadInt();
 
-        Console.WriteLine($"Message from server: {packetContent.Message}");
-        client.Id = myId;
-        client.Send.Welcome(client);
+        Console.WriteLine($"Welcome to server");
+        //client.myId = myId;
+        //client.Send.Welcome(client);
 
         // Now that we have the client's id, connect UDP
         //client.udp.Connect((IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint);
@@ -25,9 +25,8 @@ public class ClientReceive
 
     public static void Message(Client client, Packet packet)
     {
-        var packetContent = packet.GetPacketContent<MessageContent>();
-        string msg = packetContent.Message;
-        int myId = packet.ClientId;
+        string msg = packet.ReadString();
+        //int myId = packet.ReadInt();
 
         Console.WriteLine(DateTime.Now.ToString() + "\t" + msg);
     }
