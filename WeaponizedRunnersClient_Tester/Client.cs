@@ -19,8 +19,9 @@ namespace WeaponizedRunnersClient_Tester
         public int ServerId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public TCP tcp;
-        public UDPSend udp;
+        public UDPSend udpSend;
 
+        public UDPReceive udpReceive;
         public ClientReceiveManager ClientReceiveManager;
         public ClientSend Send;
 
@@ -39,7 +40,9 @@ namespace WeaponizedRunnersClient_Tester
                 });
             };
             tcp = new TCP(Id, this, receivePacketAction);
-            udp = new UDPSend(Id, this, receivePacketAction);
+            udpSend = new UDPSend(Id, this, receivePacketAction);
+            udpReceive = new UDPReceive(receivePacketAction);
+            udpReceive.StartReceiving(Constants.ClientPortUDP);
         }
 
         public void Connect(string ip, int tpcPort, int udpPort)
@@ -47,7 +50,7 @@ namespace WeaponizedRunnersClient_Tester
             isConnected = true;
             tcp.Connect(ip, tpcPort);
             if (Constants.AllowUDP)
-                udp.Connect(ip, Constants.ServerPortUDP);
+                udpSend.Connect(ip, Constants.ServerPortUDP);
         }
 
         public void Disconnect()
@@ -56,7 +59,7 @@ namespace WeaponizedRunnersClient_Tester
             {
                 isConnected = false;
                 tcp?.Disconnect();
-                udp?.Disconnect();
+                udpSend?.Disconnect();
 
                 Console.WriteLine("Disconnected from server.");
                 Environment.Exit(-1);

@@ -31,6 +31,6 @@ public class ClientSend
         packet.ClientId = client.Id;
         packet.PacketContent = packageContent;
        
-        client.udp.SendData(packet);
+        client.tcp.SendData(packet);
     }
 }
