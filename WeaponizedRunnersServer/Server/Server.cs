@@ -14,7 +14,6 @@ namespace GameServer
         private static bool isRunning = false;
         public static int MaxPlayers { get; set; }
         public static int Port { get; set; }
-        public static string ServerIP = "127.0.0.1";
 
         public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
 
@@ -90,11 +89,10 @@ namespace GameServer
 
             while (isRunning)
             {
-                //try
-                //{
                 while (nextLoop < DateTime.Now)
                 {
                     Update();
+                    ReceiveManager.RunAwaitingActions();
 
                     nextLoop = nextLoop.AddMilliseconds(Constants.MS_PER_TICK);
                     if (nextLoop > DateTime.Now)
@@ -102,11 +100,6 @@ namespace GameServer
                         Thread.Sleep(nextLoop - DateTime.Now);
                     }
                 }
-                //}
-                //catch(Exception ex)
-                //{
-                //    Console.WriteLine(ex.ToString());
-                //}
             }
         }
 
@@ -114,13 +107,8 @@ namespace GameServer
         {
             foreach (Client _client in Server.Clients.Values)
             {
-                if (_client.player != null)
-                {
-                    //_client.player.Update();
-                }
+                //Handle client logic
             }
-
-            ReceiveManager.RunAwaitingActions();
         }
     }
 }

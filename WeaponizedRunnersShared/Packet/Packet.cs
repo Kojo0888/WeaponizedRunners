@@ -27,23 +27,18 @@ namespace WeaponizedRunnersShared
             }
         }
 
-        private bool isValid = false;
-
         public Packet()
         {
-            
         }
 
         public Packet(int packetTypeId) : this()
         {
             PacketTypeId = packetTypeId;
-            //PacketContent = CreatePacketContent(packetTypeId);
         }
         
         public Packet(int packetTypeId, int clientId) : this()
         {
             PacketTypeId = packetTypeId;
-            //PacketContent = CreatePacketContent(packetTypeId);
             ClientId = clientId;
         }
 
@@ -81,14 +76,12 @@ namespace WeaponizedRunnersShared
         {
             if (incomingBytes.Length < 8)
             {
-                isValid = false;
                 return;
             }
             PacketTypeId = BitConverter.ToInt32(incomingBytes, 0);
             PacketContent = CreatePacketContent(PacketTypeId);
             ClientId = BitConverter.ToInt32(incomingBytes, 4);
             PacketContent.SetBytes(incomingBytes.Skip(8).ToArray());
-            isValid = true;
         }
 
         public byte[] GetPacketBytes()
@@ -98,11 +91,6 @@ namespace WeaponizedRunnersShared
             returnBuffer.AddRange(BitConverter.GetBytes(ClientId));
             returnBuffer.AddRange(PacketContent.GetBytes());
             return returnBuffer.ToArray();
-        }
-
-        public bool IsValid()
-        {
-            return isValid;
         }
 
         public void Dispose()
