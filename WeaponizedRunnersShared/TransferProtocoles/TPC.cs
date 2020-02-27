@@ -30,15 +30,12 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             _port = port;
             _ip = ip;
 
-            //_socket =  new Socket(AddressFamily);
-
             this.tcpClient = new TcpClient();
 
             tcpClient.ReceiveBufferSize = Constants.PACKET_DATA_BUFFER_SIZE;
             tcpClient.SendBufferSize = Constants.PACKET_DATA_BUFFER_SIZE;
 
             receiveBuffer = new byte[Constants.PACKET_DATA_BUFFER_SIZE];
-
             tcpClient.BeginConnect(ip, port, ConnectCallback, tcpClient);
         }
 
@@ -60,7 +57,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             {
                 tcpClient.EndConnect(result);
 
-                Console.WriteLine($"TPC Connected (Address: {_ip},Port: {_port})");
+                Console.WriteLine($"TPC Connected (Address: {_ip}, Port: {_port})");
                 NetworkStream stream = tcpClient.GetStream();
                 stream.BeginRead(receiveBuffer, 0, Constants.PACKET_DATA_BUFFER_SIZE, ReceiveCallback, null);
             }

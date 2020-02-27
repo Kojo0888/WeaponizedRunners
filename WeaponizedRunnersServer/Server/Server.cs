@@ -39,6 +39,7 @@ namespace GameServer
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
+            Console.WriteLine($"TCP Listener has Started (Port:{Port})");
 
             Action<Packet> serverUSPReceiveAction = (packet) => { ForwardUDPReceiveToClient(packet); };
             udpReceiver = new UDPReceive(serverUSPReceiveAction);
@@ -47,7 +48,7 @@ namespace GameServer
             Thread mainThread = new Thread(new ThreadStart(MainThread));
             isRunning = true;
             mainThread.Start();
-            Console.WriteLine($"Server started on port {Port}.");
+            Console.WriteLine($"Server has started.");
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)

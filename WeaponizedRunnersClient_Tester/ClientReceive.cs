@@ -14,13 +14,14 @@ public class ClientReceive
     {
         var clientId = packet.ClientId;
         var packageContent = packet.GetPacketContent<MessageContent>();
-        string message = packageContent.Message;
+        Console.WriteLine("Message from Server: " + packageContent.Message);
 
         client.Id = clientId;
+        Console.WriteLine("Received ID from Server: " + clientId);
 
+        packageContent.Message = "TestExampleUsername1";
         client.tcp.SendData(packet);
-        var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
-        Console.WriteLine($"Welcome method: address: {endpoint.Address.ToString()}, port:{endpoint.Port}");
+        //var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
     }
 
     public static void Message(Client client, Packet packet)

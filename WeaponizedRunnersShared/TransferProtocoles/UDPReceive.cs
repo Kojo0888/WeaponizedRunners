@@ -11,42 +11,41 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 {
     public class UDPReceive
     {
-        private UdpClient _udpClient;
-
         private int _port;
-        private string _ip;
 
         private Action<Packet> _receivePackageAction;
 
-        public UdpClient udpListener;
+        private UdpClient _udpListener;
 
         public UDPReceive(Action<Packet> action)
         {
             _receivePackageAction = action;
         }
 
-        public void StartReceiving(int port){
+        public void StartReceiving(int port)
+        {
             _port = port;
-            udpListener = new UdpClient(port);
-            udpListener.BeginReceive(UDPReceiveCallback, null);
+            _udpListener = new UdpClient(port);
+            Console.WriteLine($"UDP Receive has Started (Port: {_port}).");
+            _udpListener.BeginReceive(UDPReceiveCallback, null);
         }
 
-        private void UDPReceiveCallback(IAsyncResult _result)
+        private void UDPReceiveCallback(IAsyncResult result)
         {
             try
             {
                 IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, _port);
-                byte[] bytes = udpListener.EndReceive(_result, ref _clientEndPoint);
-                udpListener.BeginReceive(UDPReceiveCallback, null);
+                byte[] bytes = _udpListener.EndReceive(result, ref _clientEndPoint);
+                _udpListener.BeginReceive(UDPReceiveCallback, null);
 
                 using (Packet packet = new Packet(bytes))
                 {
                     _receivePackageAction(packet);
                 }
             }
-            catch (Exception _ex)
+            catch (Exception ex)
             {
-                Console.WriteLine($"Error receiving UDP data: {_ex}");
+                Console.WriteLine($"Error receiving UDP data: {ex}");
             }
         }
     }

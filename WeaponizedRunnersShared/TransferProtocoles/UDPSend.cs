@@ -13,11 +13,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
     {
         private UdpClient _udpClient;
 
-        //private Socket _socketSend;
         private int _port;
         private string _ip;
 
-        public IPEndPoint endPoint;
         private IClient _parentClient;
         private Action<Packet> _receivePackageAction;
 
@@ -25,7 +23,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         {
             _parentClient = client;
             _receivePackageAction = action;
-            //endPoint = new IPEndPoint(IPAddress.Parse(_parentClient.ServerIP), _parentClient.ServerPort);
         }
 
         public UdpClient Connect(string ip, int port)
@@ -39,17 +36,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
                 var ipAddress = IPAddress.Parse(_ip);
 
-                //endPoint = new IPEndPoint(ipAddress, _portReceive);
-
-
-                //_socketSend = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-                //_socketSend.Connect(ipAddress, _portSend);
-
-                Console.WriteLine($"Attempting UDP Connection (IP: {ipAddress} Port: {port})");
                 _udpClient = new UdpClient();
                 _udpClient.Connect(_ip, _port);
-                //_udpClient.BeginReceive(ReceiveCallback, null);
-                Console.WriteLine($"UDP Connected (IP: {ipAddress} Port: {port})");
+                Console.WriteLine($"UDP Receive Connected (IP: {ipAddress} Port: {port})");
                 return _udpClient;
             }
             catch (Exception ex)
@@ -58,8 +47,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 throw;
             }
         }
-
-   
 
         public void SendData(Packet packet)
         {
@@ -89,9 +76,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public void Disconnect()
         {
-            //_parentClient.Disconnect();
-
-            endPoint = null;
             _udpClient?.Close();
             _udpClient = null;
         }

@@ -20,8 +20,6 @@ namespace GameServer
 
             client.tcp.SendData(packet);
             var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
-            Console.WriteLine($"Welcome method: address: {endpoint.Address.ToString()}, port:{endpoint.Port}");
-            //client.udp.Connect(endpoint.Address.ToString(), endpoint.Port);
         }
 
         public void Message(Client client, string message)

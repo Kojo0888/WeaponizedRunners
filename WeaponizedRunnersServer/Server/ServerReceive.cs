@@ -15,7 +15,7 @@ namespace GameServer
             var packageContent = packet.GetPacketContent<MessageContent>();
             string message = packageContent.Message;
 
-            Console.WriteLine($"{Server.Clients[fromClient].tcp.tcpClient.Client.RemoteEndPoint} connected successfully and is now player {fromClient}. Username: \"{message}\"");
+            Console.WriteLine($"{Server.Clients[fromClient].tcp.tcpClient.Client.RemoteEndPoint} connected successfully Username: \"{message}\"");
 
             //Server.Clients[fromClient].player.SendIntoGame();
         }

@@ -13,8 +13,8 @@ namespace WeaponizedRunnersShared
         public static string ServerIP = "127.0.0.1";
         public static string ClientIP = "127.0.0.1";
 
-        public static int ClientPortUDP = 27000;
-        public static int ServerPortUDP = 27001;
+        public static int ClientPortUDP = 26951;
+        public static int ServerPortUDP = 26950;
         public static int PortTCP = 26950;
 
         public static bool AllowUDP = true;
