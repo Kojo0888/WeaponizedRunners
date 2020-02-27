@@ -9,55 +9,47 @@ using WeaponizedRunnersShared.PacketContents;
 
 namespace WeaponizedRunnersShared.TransferProtocoles
 {
-    public class UDP2Way
+    public class UDPSend
     {
         private UdpClient _udpClient;
-        private UdpClient _udpClientSend;
 
         //private Socket _socketSend;
-
-        private int _portReceive;
-
-        private int _portSend;
+        private int _port;
         private string _ip;
 
         public IPEndPoint endPoint;
         private IClient _parentClient;
         private Action<Packet> _receivePackageAction;
 
-        public UDP2Way(int id, IClient client, Action<Packet> action)
+        public UDPSend(int id, IClient client, Action<Packet> action)
         {
             _parentClient = client;
             _receivePackageAction = action;
             //endPoint = new IPEndPoint(IPAddress.Parse(_parentClient.ServerIP), _parentClient.ServerPort);
         }
 
-        public UdpClient Connect(string ip, int portReceive, int portSend)
+        public UdpClient Connect(string ip, int port)
         {
             if(!Constants.AllowUDP)
                 throw new Exception("UDP is disabled");
             try
             {
                 _ip = ip;
-                _portReceive = portReceive;
-                _portSend = portSend;
-
-                Console.WriteLine("Attempting UDP Connection");
+                _port = port;
 
                 var ipAddress = IPAddress.Parse(_ip);
 
-                endPoint = new IPEndPoint(ipAddress, _portReceive);
+                //endPoint = new IPEndPoint(ipAddress, _portReceive);
+
 
                 //_socketSend = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
                 //_socketSend.Connect(ipAddress, _portSend);
 
-                _udpClientSend = new UdpClient(_portSend);
-                _udpClientSend.Connect(_ip, _portSend);
-
-                _udpClient = new UdpClient(_portReceive);
-                _udpClient.Connect(_ip, _portReceive);
-                _udpClient.BeginReceive(ReceiveCallback, null);
-                Console.WriteLine($"UDP Connected (Endpoint: {endPoint})");
+                Console.WriteLine($"Attempting UDP Connection (IP: {ipAddress} Port: {port})");
+                _udpClient = new UdpClient();
+                _udpClient.Connect(_ip, _port);
+                //_udpClient.BeginReceive(ReceiveCallback, null);
+                Console.WriteLine($"UDP Connected (IP: {ipAddress} Port: {port})");
                 return _udpClient;
             }
             catch (Exception ex)
@@ -67,24 +59,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
             }
         }
 
-        private void ReceiveCallback(IAsyncResult _result)
-        {
-            try
-            {
-                Console.WriteLine("Receiving data from: " + endPoint);
-                byte[] data = _udpClient.EndReceive(_result, ref endPoint);
-                _udpClient.BeginReceive(ReceiveCallback, null);
-
-                Packet packet = new Packet(data);
-
-                _receivePackageAction(packet);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error while receiving UDP data: " + ex.ToString());
-                _parentClient.Disconnect();
-            }
-        }
+   
 
         public void SendData(Packet packet)
         {
@@ -93,10 +68,10 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 
             try
             {
-                if (_udpClientSend != null)
+                if (_udpClient != null)
                 {
                     var bytes = packet.GetPacketBytes();
-                    _udpClientSend.BeginSend(bytes, bytes.Length, null, null);
+                    _udpClient.BeginSend(bytes, bytes.Length, null, null);
                 }
                 else
                     Console.WriteLine("SendData: _socketSend is null");

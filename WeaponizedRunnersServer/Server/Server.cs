@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using WeaponizedRunnersShared;
+using WeaponizedRunnersShared.TransferProtocoles;
 
 namespace GameServer
 {
@@ -18,7 +19,7 @@ namespace GameServer
         public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
 
         private static TcpListener tcpListener;
-        private static UdpClient udpListener;
+        private static UDPReceive udpReceiver;
 
         public static ServerReceiveManager ReceiveManager;
         public static ServerSend Send;
@@ -39,11 +40,12 @@ namespace GameServer
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
 
-            udpListener = new UdpClient(Port);
-            udpListener.BeginReceive(UDPReceiveCallback, null);
+            Action<Packet> serverUSPReceiveAction = (packet) => { ForwardUDPReceiveToClient(packet); };
+            udpReceiver = new UDPReceive(serverUSPReceiveAction);
+            udpReceiver.StartReceiving(Constants.ServerPortUDP);
 
             Thread mainThread = new Thread(new ThreadStart(MainThread));
-            isRunning = true; 
+            isRunning = true;
             mainThread.Start();
             Console.WriteLine($"Server started on port {Port}.");
         }
@@ -55,7 +57,7 @@ namespace GameServer
             EndPoint endpoint = tpcClient.Client.RemoteEndPoint;
             Console.WriteLine($"Incoming connection from {endpoint}...");
 
-            if(Clients.Values.Count >= MaxPlayers)
+            if (Clients.Values.Count >= MaxPlayers)
             {
                 Console.WriteLine($"{endpoint} failed to connect: Server full!");
                 return;
@@ -65,35 +67,20 @@ namespace GameServer
             Clients[_currentClientId] = client;
             client.tcp.Connect(tpcClient);
             if (Constants.AllowUDP)
-                client.udp.Connect(endpoint.ToString().Split(":")[0], Constants.ServerPortUDP, Constants.ClientPortUDP);
+                client.udp.Connect(endpoint.ToString().Split(":")[0], Constants.ClientPortUDP);
             Send.Welcome(client, "Welcome to the server!");
         }
 
-        private static void UDPReceiveCallback(IAsyncResult _result)
+        private static void ForwardUDPReceiveToClient(Packet packet)
         {
-            try
+            int clientId = packet.ClientId;
+            if (clientId == 0)
             {
-                IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, Port);
-                byte[] bytes = udpListener.EndReceive(_result, ref _clientEndPoint);
-                udpListener.BeginReceive(UDPReceiveCallback, null);
-
-                using (Packet packet = new Packet(bytes))
-                {
-                    int clientId = packet.ClientId;
-                    if (clientId == 0)
-                    {
-                        Console.WriteLine("500: ClientID: " + clientId);
-                        return;
-                    }
-
-                    //Clients[clientId].udp.Connect(_clientEndPoint);
-                    Clients[clientId].udp.ReceiveData(packet);
-                }
+                Console.WriteLine("500: ClientID: " + clientId);
+                return;
             }
-            catch (Exception _ex)
-            {
-                Console.WriteLine($"Error receiving UDP data: {_ex}");
-            }
+
+            Clients[clientId].udp.ReceiveData(packet);
         }
 
         private static void MainThread()
@@ -105,16 +92,16 @@ namespace GameServer
             {
                 //try
                 //{
-                    while (nextLoop < DateTime.Now)
-                    {
-                        Update();
+                while (nextLoop < DateTime.Now)
+                {
+                    Update();
 
-                        nextLoop = nextLoop.AddMilliseconds(Constants.MS_PER_TICK);
-                        if (nextLoop > DateTime.Now)
-                        {
-                            Thread.Sleep(nextLoop - DateTime.Now);
-                        }
+                    nextLoop = nextLoop.AddMilliseconds(Constants.MS_PER_TICK);
+                    if (nextLoop > DateTime.Now)
+                    {
+                        Thread.Sleep(nextLoop - DateTime.Now);
                     }
+                }
                 //}
                 //catch(Exception ex)
                 //{

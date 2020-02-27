@@ -17,6 +17,6 @@ namespace WeaponizedRunnersShared
         public static int ServerPortUDP = 27001;
         public static int PortTCP = 26950;
 
-        public static bool AllowUDP = false;
+        public static bool AllowUDP = true;
     }
 }
