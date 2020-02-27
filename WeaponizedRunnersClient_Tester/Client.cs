@@ -13,11 +13,7 @@ namespace WeaponizedRunnersClient_Tester
     {
         public string IP { get; set; } 
         public int Port { get; set; } 
-        public int Id { get; set; } = 0;
-        public string ServerIP { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int ServerPort { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int ServerId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public int Id { get; set; }
         public TCP tcp;
         public UDPSend udpSend;
 

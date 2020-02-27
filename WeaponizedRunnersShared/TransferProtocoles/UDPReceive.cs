@@ -41,13 +41,6 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
                 using (Packet packet = new Packet(bytes))
                 {
-                    int clientId = packet.ClientId;
-                    if (clientId == 0)
-                    {
-                        Console.WriteLine("500: ClientID: " + clientId);
-                        return;
-                    }
-
                     _receivePackageAction(packet);
                 }
             }

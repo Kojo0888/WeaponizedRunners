@@ -74,12 +74,11 @@ namespace GameServer
         private static void ForwardUDPReceiveToClient(Packet packet)
         {
             int clientId = packet.ClientId;
-            if (clientId == 0)
+            if (clientId <= 0)
             {
-                Console.WriteLine("500: ClientID: " + clientId);
+                Console.WriteLine("Unable to find client with ID: " + clientId);
                 return;
             }
-
             Clients[clientId].udp.ReceiveData(packet);
         }
 

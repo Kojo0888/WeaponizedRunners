@@ -11,7 +11,7 @@ namespace GameServer
 {
     public class Client : IClient
     {
-        public int ServerId {get;set;}
+        public int Id {get;set;}
         public Player player;
         public TCP tcp;
         public UDPSend udp;
@@ -20,7 +20,7 @@ namespace GameServer
 
         public Client(int _clientId)
         {
-            ServerId = _clientId;
+            Id = _clientId;
 
             Action<Packet> receivePacketAction = (packet) =>
             {
@@ -29,12 +29,12 @@ namespace GameServer
                     Server.ReceiveManager.ProcessPacket(packet.PacketTypeId, packet);
                 });
             };
-            tcp = new TCP(ServerId, this, receivePacketAction);
+            tcp = new TCP(Id, this, receivePacketAction);
 
             if(Constants.AllowUDP)
-                udp = new UDPSend(ServerId, this, receivePacketAction);
+                udp = new UDPSend(Id, this, receivePacketAction);
 
-            player = new Player(ServerId, "NewPlayer", new Vector3(0, 0, 0), this);
+            player = new Player(Id, "NewPlayer", new Vector3(0, 0, 0), this);
         }
 
 
