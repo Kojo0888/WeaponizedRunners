@@ -18,13 +18,9 @@ namespace WeaponizedRunnersShared.PacketContents
             var fullBytesIP = new byte[IP_MAXBYTELEGTH];
             Buffer.BlockCopy(bytesIP, 0, fullBytesIP, 0 , bytesIP.Length);
 
-            Console.WriteLine(fullBytesIP.Length);
-
             var bytesUDPPort = PacketContentParser.ToBytes<int>(UDPPort);
-
             var bytesToReturn = fullBytesIP.Concat(bytesUDPPort).ToArray();
 
-            Console.WriteLine("Client Welcome(Debug) Byte return Length: " + bytesToReturn.Length);
             return bytesToReturn;
         }
 

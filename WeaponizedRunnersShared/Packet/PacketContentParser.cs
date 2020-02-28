@@ -24,16 +24,16 @@ namespace WeaponizedRunnersShared.PacketContents
 
         public static Type ToType<Type>(byte[] bytes)
         {
-            if (bytes.Length == 0)
-            {
-                Console.WriteLine("Packet (ToType): Nygga there is no bytes to read from -.-");
-                return default(Type);
-            }
-
             if (typeof(Type) == typeof(string))
             {
                 var message = Encoding.UTF8.GetString(bytes);
                 return (Type)Convert.ChangeType(message, typeof(Type));
+            }
+
+            if (bytes.Length == 0)
+            {
+                Console.WriteLine("Packet (ToType): Nygga there is no bytes to read from -.-");
+                return default(Type);
             }
 
             switch (typeof(Type).Name)
