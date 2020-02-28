@@ -50,8 +50,10 @@ namespace WeaponizedRunnersShared
         private PacketContentBase CreatePacketContent(int packetContentTypeId)
         {
             switch(packetContentTypeId){
-                case (int)PacketType.welcome:
+                case (int)PacketType.welcomeServer:
                     return new MessageContent();
+                case (int)PacketType.welcomeClient:
+                    return new WelcomeContent();
                 case (int)PacketType.message:
                     return new MessageContent();
                 default:

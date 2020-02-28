@@ -34,11 +34,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                 _ip = ip;
                 _port = port;
 
-                var ipAddress = IPAddress.Parse(_ip);
-
                 _udpClient = new UdpClient();
                 _udpClient.Connect(_ip, _port);
-                Console.WriteLine($"UDP Receive Connected (IP: {ipAddress} Port: {port})");
+                Console.WriteLine($"UDP Receive Connected (IP: {_ip} Port: {port})");
                 return _udpClient;
             }
             catch (Exception ex)

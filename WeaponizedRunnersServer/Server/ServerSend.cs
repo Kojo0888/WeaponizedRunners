@@ -14,12 +14,12 @@ namespace GameServer
             MessageContent packetContent = new MessageContent();
             packetContent.Message = message;
 
-            Packet packet = new Packet((int)PacketType.welcome);
+            Packet packet = new Packet((int)PacketType.welcomeServer);
             packet.ClientId = client.Id;
             packet.PacketContent = packetContent;
 
             client.tcp.SendData(packet);
-            var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
+            //var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
         }
 
         public void Message(Client client, string message)

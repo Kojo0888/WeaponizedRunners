@@ -19,9 +19,7 @@ public class ClientReceive
         client.Id = clientId;
         Console.WriteLine("Received ID from Server: " + clientId);
 
-        packageContent.Message = "TestExampleUsername1";
-        client.tcp.SendData(packet);
-        //var endpoint = (IPEndPoint)client.tcp.tcpClient.Client.LocalEndPoint;
+        client.Send.Welcome(client);
     }
 
     public static void Message(Client client, Packet packet)

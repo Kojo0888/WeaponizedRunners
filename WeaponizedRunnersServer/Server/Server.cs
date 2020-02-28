@@ -35,7 +35,7 @@ namespace GameServer
             tcpListener = new TcpListener(IPAddress.Any, Constants.PortTCP);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-            Console.WriteLine($"TCP Listener has Started (Port:{Constants.PortTCP})");
+            Console.WriteLine($"TCP Listener has Started (Port: {Constants.PortTCP})");
 
             Action<Packet> serverUSPReceiveAction = (packet) => { ForwardUDPReceiveToClient(packet); };
             udpReceiver = new UDPReceive(serverUSPReceiveAction);
@@ -69,8 +69,8 @@ namespace GameServer
             var client = new Client(_currentClientId);
             Clients[_currentClientId] = client;
             client.tcp.Connect(tpcClient);
-            if (Constants.AllowUDP)
-                client.udp.Connect(endpoint.ToString().Split(":")[0], Constants.ClientPortUDP);
+            //if (Constants.AllowUDP)
+            //    client.udp.Connect(endpoint.ToString().Split(":")[0], Constants.ClientPortUDP);
             Send.Welcome(client, "Welcome to the server!");
         }
 

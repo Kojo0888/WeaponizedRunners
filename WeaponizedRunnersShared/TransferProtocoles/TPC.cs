@@ -98,6 +98,8 @@ namespace WeaponizedRunnersShared.TransferProtocoles
                     if (byteLength <= 0)
                     {
                         Console.WriteLine($"TCP Received packet is empty.");
+                        _parentClient.Disconnect();
+                        return;
                     }
                     else
                     {

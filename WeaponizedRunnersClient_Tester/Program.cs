@@ -13,7 +13,7 @@ namespace WeaponizedRunnersClient_Tester
             {
                 Console.Title = "Weaponized runners test client";
                 Client client = new Client();
-                client.Connect("127.0.0.1", Constants.PortTCP, Constants.ServerPortUDP);
+                client.Connect("127.0.0.1", Constants.PortTCP, 10009, Constants.ServerPortUDP);
                 Thread.Sleep(500);
                 Task task = Task.Run(() => {
                     while (true)

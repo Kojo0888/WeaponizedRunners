@@ -18,14 +18,17 @@ namespace GameServer
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)PacketType.welcome, ServerReceive.Welcome },
+                { (int)PacketType.welcomeClient, ServerReceive.Welcome },
                 { (int)PacketType.message, ServerReceive.Message },
             };
         }
 
         public void ProcessPacket(int packetHandlerId, Packet packet)
         {
-            packetHandlers[packetHandlerId](packet);
+            if(packetHandlers.ContainsKey(packetHandlerId))
+                packetHandlers[packetHandlerId](packet);
+            else 
+                Console.WriteLine("There is no package receive for packageTypeID: " + packetHandlerId);
         }
 
         public void ExecuteOnMainThread(Action _action)

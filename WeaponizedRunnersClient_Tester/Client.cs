@@ -11,8 +11,6 @@ namespace WeaponizedRunnersClient_Tester
 {
     public class Client : IClient
     {
-        public string IP { get; set; } 
-        public int Port { get; set; } 
         public int Id { get; set; }
         public TCP tcp;
         public UDPSend udpSend;
@@ -38,15 +36,16 @@ namespace WeaponizedRunnersClient_Tester
             tcp = new TCP(this, receivePacketAction);
             udpSend = new UDPSend(this, receivePacketAction);
             udpReceive = new UDPReceive(receivePacketAction);
-            udpReceive.StartListening(Constants.ClientPortUDP);
         }
 
-        public void Connect(string ip, int tpcPort, int udpPort)
+        public void Connect(string ip, int tpcPort, int udpReceivePort, int udpSendPort)
         {
             isConnected = true;
             tcp.Connect(ip, tpcPort);
-            if (Constants.AllowUDP)
-                udpSend.Connect(ip, Constants.ServerPortUDP);
+            if (Constants.AllowUDP){
+                udpReceive.StartListening(udpReceivePort);
+                udpSend.Connect(ip, udpSendPort);
+            }
         }
 
         public void Disconnect()

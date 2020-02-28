@@ -6,7 +6,8 @@ namespace WeaponizedRunnersShared
 {
     public enum PacketType
     {
-        welcome = 1,
-        message
-    }
-}
+        welcomeServer = 1,
+        welcomeClient = 2,
+        message = 3,
+    } 
+} 

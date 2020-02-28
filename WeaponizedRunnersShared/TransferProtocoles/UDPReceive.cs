@@ -11,7 +11,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 {
     public class UDPReceive
     {
-        private int _port;
+        public int Port;
 
         private Action<Packet> _receivePackageAction;
 
@@ -24,9 +24,9 @@ namespace WeaponizedRunnersShared.TransferProtocoles
 
         public void StartListening(int port)
         {
-            _port = port;
+            Port = port;
             _udpListener = new UdpClient(port);
-            Console.WriteLine($"UDP Receive has Started (Port: {_port}).");
+            Console.WriteLine($"UDP Receive has Started (Port: {Port}).");
             _udpListener.BeginReceive(UDPReceiveCallback, null);
         }
 
@@ -34,7 +34,7 @@ namespace WeaponizedRunnersShared.TransferProtocoles
         {
             try
             {
-                IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, _port);
+                IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, Port);
                 byte[] bytes = _udpListener.EndReceive(result, ref _clientEndPoint);
                 _udpListener.BeginReceive(UDPReceiveCallback, null);
 

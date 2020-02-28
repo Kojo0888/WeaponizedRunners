@@ -19,7 +19,7 @@ namespace WeaponizedRunnersClient_Tester
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)PacketType.welcome, ClientReceive.Welcome },
+                { (int)PacketType.welcomeServer, ClientReceive.Welcome },
                 { (int)PacketType.message, ClientReceive.Message },
             };
         }

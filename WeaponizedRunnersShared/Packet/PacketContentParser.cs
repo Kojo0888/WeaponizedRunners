@@ -24,6 +24,12 @@ namespace WeaponizedRunnersShared.PacketContents
 
         public static Type ToType<Type>(byte[] bytes)
         {
+            if (bytes.Length == 0)
+            {
+                Console.WriteLine("Packet (ToType): Nygga there is no bytes to read from -.-");
+                return default(Type);
+            }
+
             if (typeof(Type) == typeof(string))
             {
                 var message = Encoding.UTF8.GetString(bytes);
@@ -32,7 +38,7 @@ namespace WeaponizedRunnersShared.PacketContents
 
             switch (typeof(Type).Name)
             {
-                case "int":
+                case "Int32":
                     return GetFuckingType<Type>(BitConverter.ToInt32(bytes, 0));
                 case "float":
                     return GetFuckingType<Type>(BitConverter.ToSingle(bytes, 0));
